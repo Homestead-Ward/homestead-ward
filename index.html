@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homestead Ward Agenda</title>
+  <!-- Google Fonts for gorgeous premium typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Reset & CSS Custom Properties */
+    :root {
+      --bg-color: #f9fafb; /* Extra eye-friendly background */
+      --card-bg: #ffffff;
+      --primary-color: #0d6efd; /* Vibrant premium iOS/Android blue */
+      --secondary-color: #6b7280; /* Sleek medium gray label tone */
+      --text-dark: #111827; /* Prominent dark tone */
+      --border-color: rgba(229, 231, 235, 0.8);
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-color);
+      color: var(--text-dark);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ----------------------------------------------------
+       Language visibility toggle rules
+       ---------------------------------------------------- */
+    body.show-en .lang-ht {
+      display: none !important;
+    }
+    body.show-ht .lang-en {
+      display: none !important;
+    }
+
+    /* ----------------------------------------------------
+       SPA Page Visibility rules
+       ---------------------------------------------------- */
+    .app-page {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .app-page.active {
+      display: flex !important;
+    }
+
+    /* Container for Desktop Viewport Control */
+    .app-container {
+      width: 100%;
+      max-width: 480px; /* Perfect smartphone viewport limits */
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg-color);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      position: relative;
+    }
+
+    /* Premium Sticky Floating Header Layout */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: #ffffff;
+      border-bottom: 1px solid rgba(229, 231, 235, 0.6);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.03em;
+    }
+
+    h2 {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--secondary-color);
+      min-height: 1.25rem;
+    }
+
+    /* Segmented Control Toggle Container */
+    .header-controls {
+      display: flex;
+      justify-content: center;
+      margin-top: 0.25rem;
+    }
+
+    .segmented-control {
+      display: flex;
+      background-color: #f3f4f6; /* Modern gray capsule background */
+      border-radius: 9999px; /* Fully pill-shaped */
+      padding: 3px;
+      width: 100%;
+      border: 1px solid #e5e7eb;
+    }
+
+    .lang-btn {
+      flex: 1;
+      padding: 0.55rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 9999px; /* Inner capsule element alignment */
+      background-color: transparent;
+      color: #4b5563;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .lang-btn:hover {
+      color: var(--text-dark);
+    }
+
+    .lang-btn.active {
+      background-color: var(--primary-color);
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(13, 110, 253, 0.35);
+    }
+
+    /* Main Content Area */
+    main {
+      flex: 1;
+      padding: 1.25rem;
+      padding-bottom: 5.5rem; /* Expanded bottom padding so bottom-nav never obstructs card contents */
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Elegant Page/Section Title */
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-top: 0.25rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    /* Premium Cards (Agenda & Schedule items) */
+    .agenda-item {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px; /* iOS-like smooth radius corners */
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.01);
+      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Dynamic hover effects for rich feedback */
+    .agenda-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Special border left indicator for active music or hymns */
+    .agenda-item.music-item {
+      border-left: 4px solid var(--primary-color);
+    }
+
+    /* Column 1: Role/Topic labels or Schedule Times */
+    .agenda-role {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--secondary-color);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Column 2: Person, Event details, or Hymn Names */
+    .agenda-person {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    /* Italicizing & Blue styling custom to religious hymns or musical numbers */
+    .hymn-text {
+      font-style: italic;
+      color: #1e3a8a; /* Soft church devotion deep blue */
+      margin-bottom: 2px; /* Extra breathing space margin padding */
+    }
+
+    /* Empty items or warnings */
+    .alert-box {
+      font-size: 0.875rem;
+      color: #b45309;
+      background-color: #fffbeb;
+      border: 1px solid #fef3c7;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+    }
+
+    /* ----------------------------------------------------
+       Premium Bottom Navigation Bar
+       ---------------------------------------------------- */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 480px; /* Anchor exactly to smartphone layout viewport constraints */
+      background-color: #ffffff;
+      border-top: 1px solid rgba(229, 231, 235, 0.6);
+      display: flex;
+      height: 4.5rem; /* iOS & Android density targets */
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+      z-index: 100;
+    }
+
+    .nav-tab {
+      flex: 1;
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: #9ca3af; /* Soft inactive icon gray */
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.75rem;
+      padding: 0.5rem;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .nav-tab:hover {
+      color: #4b5563;
+    }
+
+    .nav-tab.active {
+      color: var(--primary-color);
+    }
+
+    .nav-tab .nav-icon {
+      transition: transform 0.2s ease;
+      stroke: currentColor;
+    }
+
+    .nav-tab.active .nav-icon {
+      transform: scale(1.1);
+      stroke: var(--primary-color);
+    }
+
+    /* Shimmer Loading Animation blocks */
+    .shimmer-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .shimmer-card {
+      height: 74px;
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 12px;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+  </style>
+</head>
+<body class="show-en"> <!-- Premium design defaults instantly to english mode representation -->
+
+  <!-- App wrapper to ensure smart responsive mobile layout styling -->
+  <div class="app-container">
+    
+    <header>
+      <h1 id="main-title">Homestead Ward</h1>
+      <h2 id="agenda-date"></h2>
+      
+      <div class="header-controls">
+        <!-- Elegant Segmented Control Toggle Pill selection -->
+        <div class="segmented-control">
+          <button class="lang-btn active" id="btn-en" onclick="setLanguage('en')">English</button>
+          <button class="lang-btn" id="btn-ht" onclick="setLanguage('ht')">Kreyòl</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      
+      <!-- SPA Page 1: Agile Church Agenda List -->
+      <div id="page-agenda" class="app-page active">
+        <div id="agenda-cards-container">
+          <!-- Shimmer effect initially while loading agenda properties -->
+          <div class="shimmer-container">
+            <div class="shimmer-card"></div>
+            <div class="shimmer-card"></div>
+            <div class="shimmer-card"></div>
+            <div class="shimmer-card"></div>
+            <div class="shimmer-card"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPA Page 2: Bilingual Meeting Schedule -->
+      <div id="page-schedule" class="app-page">
+        <h3 class="section-title" style="text-align: center; margin-bottom: 0.5rem;">
+          <span class="lang-en">Meeting Schedule</span>
+          <span class="lang-ht">Orè Reyinyon</span>
+        </h3>
+
+        <!-- Card 1 -->
+        <div class="agenda-item">
+          <div class="agenda-role">
+            <span class="lang-en">12:40 PM – 1:30 PM</span>
+            <span class="lang-ht">12:40 PM – 1:30 PM</span>
+          </div>
+          <div class="agenda-person">
+            <span class="lang-en">Primary (Every Sunday)</span>
+            <span class="lang-ht">Primè (Chak Dimanch)</span>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="agenda-item">
+          <div class="agenda-role">
+            <span class="lang-en">1st & 3rd Sundays</span>
+            <span class="lang-ht">1er ak 3èm Dimanch</span>
+          </div>
+          <div class="agenda-person">
+            <span class="lang-en">Sunday School</span>
+            <span class="lang-ht">Lekòl di Dimanch</span>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="agenda-item">
+          <div class="agenda-role">
+            <span class="lang-en">2nd & 4th Sundays</span>
+            <span class="lang-ht">2èm ak 4èm Dimanch</span>
+          </div>
+          <div class="agenda-person">
+            <span class="lang-en">Priesthood, Relief Society, & Young Women</span>
+            <span class="lang-ht">Prètriz, Sosyete Sekou, & Jèn Fi</span>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="agenda-item">
+          <div class="agenda-role">
+            <span class="lang-en">5th Sundays</span>
+            <span class="lang-ht">5èm Dimanch</span>
+          </div>
+          <div class="agenda-person">
+            <span class="lang-en">Combined Youth & Adults</span>
+            <span class="lang-ht">Reyinyon Konbine</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPA Page 3: Live Activities Feed -->
+      <div id="page-activities" class="app-page">
+        <h2 class="section-title" style="text-align: center; margin-bottom: 0.5rem;">
+          <span class="lang-en">Upcoming Activities</span>
+          <span class="lang-ht">Aktivite k ap vini yo</span>
+        </h2>
+        <div id="activities-cards-container">
+          <!-- Shimmer effect initially while loading activities -->
+          <div class="shimmer-container">
+            <div class="shimmer-card"></div>
+            <div class="shimmer-card"></div>
+            <div class="shimmer-card"></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Bottom Navigation Bar (Constructed with tap-friendly targets of 4.5rem/72px height) -->
+    <nav class="bottom-nav">
+      <button class="nav-tab active" id="tab-agenda" onclick="showPage('page-agenda', 'tab-agenda')">
+        <!-- SVG calendar/list icon styling -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
+        <span class="lang-en">Agenda</span>
+        <span class="lang-ht">Pwogram</span>
+      </button>
+      <button class="nav-tab" id="tab-schedule" onclick="showPage('page-schedule', 'tab-schedule')">
+        <!-- SVG clock/calendar icon styling for schedule -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span class="lang-en">Schedule</span>
+        <span class="lang-ht">Orè</span>
+      </button>
+      <button class="nav-tab" id="tab-activities" onclick="showPage('page-activities', 'tab-activities')">
+        <!-- SVG bell/activity icon styling -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        <span class="lang-en">Activities</span>
+        <span class="lang-ht">Aktivite</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script>
+    // ----------------------------------------------------
+    // Requirements Constant Definition
+    // ----------------------------------------------------
+    const inputUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=985081503&single=true&output=csv';
+    const hymnsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=310487653&single=true&output=csv';
+    const glossaryUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=0&single=true&output=csv';
+    const activitiesUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=645367649&single=true&output=csv';
+
+    // ----------------------------------------------------
+    // Robust Bilingual Default Sample Data Fallbacks
+    // These parse and render offline configurations immediately
+    // if the Google Sheets API is rate-limited or fails.
+    // ----------------------------------------------------
+    const sampleInputCSV = `Date:,June 7, 2026 / 7 Jwen 2026
+Presiding,President William Davis
+Conducting,Bishop Marcus Young
+Opening Hymn,58
+Invocation,Sister Sarah Jenkins
+Ward Business,Brother Michael Adams
+Sacrament Hymn,191
+Passing of the Sacrament,The Aaronic Priesthood
+Speaker,Sister Alisha Paul
+Youth Speaker,Brother Ethan Brown
+Intermediate Hymn,136
+Speaker,Elder Jordan Miller
+Closing Hymn,166
+Benediction,Sister Rose Marie Beauvais`;
+
+    const sampleGlossaryCSV = `English,Haitian Creole
+Date:,Dat:
+Presiding,Preside
+Conducting,Kondui
+Opening Hymn,Kantik Ouvèti
+Invocation,Priyè Ouvèti
+Ward Business,Afè Pawas la
+Sacrament Hymn,Kantik Sentsèn
+Passing of the Sacrament,Distribisyon Sentsèn nan
+Speaker,Diskour
+Youth Speaker,Jenn ki pou Pale
+Intermediate Hymn,Kantik Entèmedyè
+Closing Hymn,Kantik Klòti
+Benediction,Priyè Klòti
+Testimonies,Temwayaj`;
+
+    const sampleHymnsCSV = `EN Num,EN Title,FR Num,FR Title
+58,Come\\, Ye Children of the Lord,58,Vini\\, nou Menm Pitit Senyè a (No. 58)
+191,As Now We Take the Sacrament,191,Pandan N-ap Pran Sentsèn nan (No. 191)
+136,I Know That My Redeemer Lives,136,Mwen Konnen Ransatè m nan Viv (No. 136)
+166,Abide with Me!,166,Rete avè m! (No. 166)`;
+
+    /**
+     * Splits values by the " / " delimiter.
+     * If the delimiter is present, it returns an object with english (en) and kreyol (ht) parts.
+     * Otherwise it duplicates the value for both codes.
+     */
+    function splitLanguages(rawText) {
+      if (!rawText) {
+        return { en: '', ht: '' };
+      }
+      if (rawText.includes(' / ')) {
+        const parts = rawText.split(' / ');
+        return {
+          en: parts[0] ? parts[0].trim() : '',
+          ht: parts[1] ? parts[1].trim() : ''
+        };
+      }
+      return {
+        en: rawText.trim(),
+        textHt: rawText.trim(),
+        ht: rawText.trim()
+      };
+    }
+
+    /**
+     * Parsing of CSV text into rows, supporting values surrounded inside quotes.
+     */
+    function parseCSV(text) {
+      if (!text) return [];
+      
+      const rawRows = text.split(/\r?\n/);
+      const parsedRows = [];
+
+      for (let i = 0; i < rawRows.length; i++) {
+        const rowText = rawRows[i].trim();
+        if (!rowText) continue; // Skip completely empty rows
+        
+        const cols = [];
+        let insideQuote = false;
+        let entry = '';
+        
+        for (let c = 0; c < rowText.length; c++) {
+          const char = rowText[c];
+          if (char === '"') {
+            insideQuote = !insideQuote;
+          } else if (char === ',' && !insideQuote) {
+            cols.push(entry);
+            entry = '';
+          } else {
+            entry += char;
+          }
+        }
+        cols.push(entry);
+        
+        // Clean columns, remove surrounding quotes and escaped comments
+        const cleanedCols = cols.map(val => {
+          let trimmed = val.trim();
+          if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
+            trimmed = trimmed.substring(1, trimmed.length - 1).trim();
+          }
+          trimmed = trimmed.replace(/\\,/g, ',');
+          trimmed = trimmed.replace(/""/g, '"');
+          return trimmed;
+        });
+        
+        parsedRows.push(cleanedCols);
+      }
+      
+      return parsedRows;
+    }
+
+    /**
+     * Switch language toggles between 'en' and 'ht' values
+     */
+    function setLanguage(lang) {
+      const body = document.body;
+      const btnEn = document.getElementById('btn-en');
+      const btnHt = document.getElementById('btn-ht');
+
+      if (lang === 'en') {
+        body.classList.remove('show-ht');
+        body.classList.add('show-en');
+        btnEn.classList.add('active');
+        btnHt.classList.remove('active');
+      } else if (lang === 'ht') {
+        body.classList.remove('show-en');
+        body.classList.add('show-ht');
+        btnHt.classList.add('active');
+        btnEn.classList.remove('active');
+      }
+    }
+
+    /**
+     * SPA Toggles between active pages and highlights navigation tabs
+     */
+    function showPage(pageId, tabId) {
+      // Deactivate all pages
+      const pages = document.querySelectorAll('.app-page');
+      pages.forEach(p => p.classList.remove('active'));
+
+      // Deactivate all tabs
+      const tabs = document.querySelectorAll('.nav-tab');
+      tabs.forEach(t => t.classList.remove('active'));
+
+      // Activate chosen page & tab
+      const selectedPage = document.getElementById(pageId);
+      if (selectedPage) {
+        selectedPage.classList.add('active');
+      }
+
+      const selectedTab = document.getElementById(tabId);
+      if (selectedTab) {
+        selectedTab.classList.add('active');
+      }
+
+      // Smooth bounce scroll to top of device screen
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+
+    /**
+     * Renders parsed Input rows using Glossary and Hymn information map.
+     */
+    function renderAgenda(inputRows, glossaryMap, hymnsMap) {
+      const agendaDateEl = document.getElementById('agenda-date');
+      const container = document.getElementById('agenda-cards-container');
+
+      // Clear loading elements (such as shimmer spinner)
+      container.innerHTML = '';
+
+      if (!inputRows || inputRows.length === 0) {
+        container.innerHTML = '<div class="alert-box">No agenda data found.</div>';
+        return;
+      }
+
+      // Extract the date from the very first row
+      const firstRow = inputRows[0];
+      let rawDateText = '';
+      if (firstRow) {
+        if (firstRow.length >= 2) {
+          const firstCell = firstRow[0].toLowerCase();
+          if (firstCell.includes('date')) {
+            rawDateText = firstRow.slice(1).join(', ').trim();
+          } else {
+            rawDateText = firstRow.join(', ').trim();
+          }
+        } else if (firstRow[0]) {
+          rawDateText = firstRow[0].replace(/Date:?/i, '').trim();
+        }
+      }
+
+      // Robust Date Parsing: trim excess whitespace
+      rawDateText = rawDateText.trim();
+
+      // Handle legacy bilingual mock strings "June 7, 2026 / 7 Jwen 2026"
+      let cleanDateText = rawDateText;
+      if (cleanDateText.includes(' / ')) {
+        cleanDateText = cleanDateText.split(' / ')[0].trim();
+      }
+
+      // Create a standard JavaScript Date object
+      let parsedDate = new Date(cleanDateText);
+      if (isNaN(parsedDate.getTime())) {
+        parsedDate = new Date(); // Safe fallback to current date if parsing fails
+      }
+
+      // UI Formatting (Header) using Intl.DateTimeFormat for English as "Month Day, Year"
+      const optionsEn = { year: 'numeric', month: 'long', day: 'numeric' };
+      const formattedDateEn = new Intl.DateTimeFormat('en-US', optionsEn).format(parsedDate);
+
+      // Format elegant Haitian Creole equivalent bilingually
+      const htMonths = ["Janvye", "Fevriye", "Mas", "Avril", "Me", "Jwen", "Jiyè", "Out", "Sektanm", "Oktòb", "Novanm", "Desanm"];
+      const day = parsedDate.getDate();
+      const monthIndex = parsedDate.getMonth();
+      const year = parsedDate.getFullYear();
+      const formattedDateHt = `${day} ${htMonths[monthIndex]} ${year}`;
+
+      agendaDateEl.innerHTML = `
+        <span class="lang-en">${formattedDateEn}</span>
+        <span class="lang-ht">${formattedDateHt}</span>
+      `;
+
+      // Fast Sunday Logic Verification: strictly use .getDate()
+      const isFirstSunday = parsedDate.getDate() <= 7;
+
+      // Loop remaining rows starting from row 1 (index 1)
+      const remainingRows = inputRows.slice(1);
+      let renderCount = 0;
+
+      remainingRows.forEach(([role, val]) => {
+        // Skip valid but completely empty pairs
+        if (!role || !role.trim()) return;
+
+        const roleTrimmed = role.trim();
+        const valTrimmed = (val || '').trim();
+
+        const roleLower = roleTrimmed.toLowerCase();
+        const isSpeakerOrInterHymn = roleLower.includes('speaker') || roleLower.includes('intermediate hymn');
+
+        // Smart routing logic based on Fast Sunday vs Standard Sunday
+        if (isFirstSunday) {
+          if (isSpeakerOrInterHymn) {
+            return; // Skip speakers and intermediate hymns on Fast Sunday
+          }
+        } else {
+          if (isSpeakerOrInterHymn && !valTrimmed) {
+            return; // Skip if a speaker or intermediate hymn is unassigned/empty in standard layout
+          }
+        }
+
+        // Get English and Haitian Creole translated label
+        const roleEn = roleTrimmed;
+        const roleHt = glossaryMap[roleTrimmed] || glossaryMap[roleTrimmed.toLowerCase()] || roleTrimmed;
+
+        // Check if item contains "Hymn"
+        const isHymn = roleTrimmed.toLowerCase().includes('hymn');
+
+        let enText = valTrimmed;
+        let htText = valTrimmed;
+
+        if (isHymn && valTrimmed) {
+          // Helper to find hymn inside map
+          const lookupHymn = (v) => {
+            if (!v) return null;
+            if (hymnsMap[v]) return hymnsMap[v];
+            const matches = v.match(/\d+/);
+            if (matches && hymnsMap[matches[0]]) return hymnsMap[matches[0]];
+            return null;
+          };
+
+          const hymn = lookupHymn(valTrimmed);
+          if (hymn) {
+            enText = `${valTrimmed}. ${hymn.enTitle}`;
+            htText = `${hymn.frNum || valTrimmed}. ${hymn.frTitle || hymn.enTitle}`;
+          }
+        }
+
+        // Create the agenda-item div
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'agenda-item';
+        if (isHymn) {
+          itemDiv.classList.add('music-item');
+        }
+
+        // Column 1 element: Role Label
+        const roleEl = document.createElement('div');
+        roleEl.className = 'agenda-role';
+        roleEl.innerHTML = `
+          <span class="lang-en">${roleEn}</span>
+          <span class="lang-ht">${roleHt}</span>
+        `;
+
+        // Column 2 element: Value/Person/Hymn
+        const personEl = document.createElement('div');
+        personEl.className = 'agenda-person';
+        if (isHymn) {
+          personEl.classList.add('hymn-text');
+        }
+        personEl.innerHTML = `
+          <span class="lang-en">${enText || '—'}</span>
+          <span class="lang-ht">${htText || '—'}</span>
+        `;
+
+        // Append components vertically to card
+        itemDiv.appendChild(roleEl);
+        itemDiv.appendChild(personEl);
+
+        // Put card into content stream
+        container.appendChild(itemDiv);
+        renderCount++;
+
+        // Fast Sunday Testimonies card injection immediately following the Sacrament administration row
+        const isSacramentRow = roleTrimmed.toLowerCase().includes('sacrament') && !roleTrimmed.toLowerCase().includes('hymn');
+        if (isFirstSunday && isSacramentRow) {
+          const testDiv = document.createElement('div');
+          testDiv.className = 'agenda-item';
+
+          const testRoleEl = document.createElement('div');
+          testRoleEl.className = 'agenda-role';
+          const testEn = 'Testimonies';
+          const testHt = glossaryMap['testimonies'] || glossaryMap['Testimonies'] || 'Temwayaj';
+          testRoleEl.innerHTML = `
+            <span class="lang-en">${testEn}</span>
+            <span class="lang-ht">${testHt}</span>
+          `;
+          testDiv.appendChild(testRoleEl);
+
+          container.appendChild(testDiv);
+          renderCount++;
+        }
+      });
+
+      if (renderCount === 0) {
+        container.innerHTML = '<div class="alert-box">The agenda lists no current details.</div>';
+      }
+    }
+
+    /**
+     * Main flow: Fetch all three inputs concurrently or fallback elegantly
+     */
+    async function loadAgenda() {
+      const container = document.getElementById('agenda-cards-container');
+      
+      try {
+        console.log('Fetching church sheets concurrently...');
+        
+        const [inputRes, hymnsRes, glossaryRes] = await Promise.all([
+          fetch(inputUrl),
+          fetch(hymnsUrl),
+          fetch(glossaryUrl)
+        ]);
+
+        if (!inputRes.ok || !hymnsRes.ok || !glossaryRes.ok) {
+          throw new Error('One or more spreadsheet feeds returned response errors');
+        }
+
+        const [inputText, hymnsText, glossaryText] = await Promise.all([
+          inputRes.text(),
+          hymnsRes.text(),
+          glossaryRes.text()
+        ]);
+
+        // Parsing
+        const parsedInput = parseCSV(inputText);
+        const parsedGlossary = parseCSV(glossaryText);
+        const parsedHymns = parseCSV(hymnsText);
+
+        // Building glossary map
+        const glossaryMap = {};
+        parsedGlossary.forEach(row => {
+          if (row && row.length >= 2) {
+            const en = row[0].trim();
+            const ht = row[1].trim();
+            glossaryMap[en] = ht;
+            glossaryMap[en.toLowerCase()] = ht;
+          }
+        });
+
+        // Building hymns map
+        const hymnsMap = {};
+        parsedHymns.forEach(row => {
+          if (row && row.length >= 4) {
+            const enNum = row[0].trim();
+            const enTitle = row[1].trim();
+            const frNum = row[2].trim();
+            const frTitle = row[3].trim();
+            hymnsMap[enNum] = { enTitle, frNum, frTitle };
+          }
+        });
+
+        // Render
+        renderAgenda(parsedInput, glossaryMap, hymnsMap);
+
+      } catch (error) {
+        console.warn('Network fetching failed or was blocked. Using robust offline join model matching raw sheets.', error);
+        
+        // Load fallback CSV datasets
+        const parsedInput = parseCSV(sampleInputCSV);
+        const parsedGlossary = parseCSV(sampleGlossaryCSV);
+        const parsedHymns = parseCSV(sampleHymnsCSV);
+
+        // Build fallback maps
+        const glossaryMap = {};
+        parsedGlossary.forEach(row => {
+          if (row && row.length >= 2) {
+            const en = row[0].trim();
+            const ht = row[1].trim();
+            glossaryMap[en] = ht;
+            glossaryMap[en.toLowerCase()] = ht;
+          }
+        });
+
+        const hymnsMap = {};
+        parsedHymns.forEach(row => {
+          if (row && row.length >= 4) {
+            const enNum = row[0].trim();
+            const enTitle = row[1].trim();
+            const frNum = row[2].trim();
+            const frTitle = row[3].trim();
+            hymnsMap[enNum] = { enTitle, frNum, frTitle };
+          }
+        });
+
+        // Small delay to enjoy the premium loading shimmer
+        setTimeout(() => {
+          renderAgenda(parsedInput, glossaryMap, hymnsMap);
+          
+          // Prepend a nice subtle message that details dynamic offline preview
+          const notice = document.createElement('div');
+          notice.className = 'alert-box';
+          notice.style.marginBottom = '1rem';
+          notice.innerHTML = `⚠️ Fetch error resolved: <strong>${error.message || 'CORS restriction fallback'}</strong>. Utilizing highly robust local dataset matching relational inputs.`;
+          container.insertBefore(notice, container.firstChild);
+        }, 500);
+      }
+    }
+
+    // ----------------------------------------------------
+    // Robust Activities CSV Sample Data (Fallback)
+    // ----------------------------------------------------
+    const sampleActivitiesCSV = `Date,Time,English Title,Kreyòl Title,Location,Address
+"June 11, 2026","7:00 PM - 8:30 PM","Stake Institute Class","Klas Enstiti Pye a","Fontainebleau Chapel","9900 W Flagler Street, Miami, FL 33174"
+"June 20, 2026","3:30 PM - 7:30 PM","Stake Day at the Miami Marlins","Jounen Pye a nan Miami Marlins","LoanDepot Park","1402 NW 7th Street, Miami, FL 33125"
+"June 25, 2026","6:30 PM - 8:00 PM","Relief Society Craft Night","Sware Atizana Sosyete Sekou a","Relief Society Room","9900 W Flagler Street, Miami, FL 33174"
+"July 4, 2026","9:00 AM - 12:00 PM","Elders Quorum Service Project","Pwojè Sèvis Korum Èldè yo","Community Food Bank","28500 SW 152nd Ave, Homestead, FL 33033"`;
+
+    /**
+     * Renders parsed activities from CSV rows into the activities list.
+     */
+    function renderActivities(rows) {
+      const container = document.getElementById('activities-cards-container');
+      container.innerHTML = '';
+      
+      // Filter out header row if present, or any row without a date
+      let dataRows = rows;
+      if (dataRows.length > 0 && dataRows[0][0] && dataRows[0][0].toLowerCase().includes('date')) {
+        dataRows = dataRows.slice(1);
+      }
+      
+      const htDays = {
+        "Sunday": "Dimanch", "Monday": "Lendi", "Tuesday": "Madi", "Wednesday": "Mèkredi",
+        "Thursday": "Jedi", "Friday": "Vandredi", "Saturday": "Samdi"
+      };
+      
+      const htMonthsArr = ["Janvye", "Fevriye", "Mas", "Avril", "Me", "Jwen", "Jiyè", "Out", "Sektanm", "Oktòb", "Novanm", "Desanm"];
+      
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      
+      const parsedEvents = [];
+      
+      dataRows.forEach(row => {
+        if (!row || row.length < 3) return; // Skip invalid rows
+        
+        const rawDate = row[0] ? row[0].trim() : '';
+        if (!rawDate) return;
+        
+        let eventDate = new Date(rawDate);
+        if (isNaN(eventDate.getTime())) {
+          return; // Skip if date is totally unparseable
+        }
+        
+        // Filter out past events
+        if (eventDate.getTime() < todayStart.getTime()) {
+          return;
+        }
+        
+        parsedEvents.push({
+          date: eventDate,
+          time: row[1] ? row[1].trim() : '',
+          titleEn: row[2] ? row[2].trim() : '',
+          titleHt: (row[3] && row[3].trim()) ? row[3].trim() : (row[2] ? row[2].trim() : ''),
+          locationName: row[4] ? row[4].trim() : '',
+          address: row[5] ? row[5].trim() : ''
+        });
+      });
+      
+      if (parsedEvents.length === 0) {
+        container.innerHTML = '<div class="alert-box">No upcoming activities found.</div>';
+        return;
+      }
+      
+      // Sort chronologically
+      parsedEvents.sort((a, b) => a.date.getTime() - b.date.getTime());
+      
+      // Limit to 15
+      const limitedEvents = parsedEvents.slice(0, 15);
+      
+      limitedEvents.forEach(event => {
+        // English Formatting
+        const optionsDateEn = { weekday: 'long', month: 'long', day: 'numeric' };
+        const dateEn = new Intl.DateTimeFormat('en-US', optionsDateEn).format(event.date);
+        const displayEn = event.time ? `${dateEn} at ${event.time}` : dateEn;
+        
+        // Haitian Creole Formatting
+        const dayOfWeekEn = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(event.date);
+        const dayOfWeekHt = htDays[dayOfWeekEn] || dayOfWeekEn;
+        const monthHt = htMonthsArr[event.date.getMonth()];
+        const dayNum = event.date.getDate();
+        const dateHt = `${dayOfWeekHt}, ${dayNum} ${monthHt}`;
+        const displayHt = event.time ? `${dateHt} a ${event.time}` : dateHt;
+        
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'agenda-item';
+        
+        const timeEl = document.createElement('div');
+        timeEl.className = 'agenda-role';
+        timeEl.innerHTML = `
+          <span class="lang-en">${displayEn}</span>
+          <span class="lang-ht">${displayHt}</span>
+        `;
+        
+        const titleEl = document.createElement('div');
+        titleEl.className = 'agenda-person';
+        titleEl.innerHTML = `
+          <span class="lang-en">${event.titleEn}</span>
+          <span class="lang-ht">${event.titleHt}</span>
+        `;
+        
+        cardDiv.appendChild(timeEl);
+        cardDiv.appendChild(titleEl);
+        
+        // Render the Location Name in bold, muted color
+        if (event.locationName) {
+          const locEl = document.createElement('div');
+          locEl.className = 'activity-location';
+          locEl.setAttribute('style', 'font-size: 0.85rem; color: var(--secondary-color); margin-top: 6px; font-weight: 700;');
+          locEl.innerHTML = `
+            <span>📍 ${event.locationName}</span>
+          `;
+          cardDiv.appendChild(locEl);
+        }
+        
+        // Render Address if exists
+        if (event.address) {
+          const addressEl = document.createElement('div');
+          addressEl.className = 'activity-address';
+          addressEl.setAttribute('style', 'margin-top: 4px; font-size: 0.85rem;');
+          
+          const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(event.address)}`;
+          
+          addressEl.innerHTML = `
+            <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" style="color: var(--primary-color); text-decoration: underline; font-weight: 500; display: inline-flex; align-items: center; gap: 4px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+              <span>${event.address}</span>
+            </a>
+          `;
+          cardDiv.appendChild(addressEl);
+        }
+        
+        container.appendChild(cardDiv);
+      });
+    }
+
+    /**
+     * Fetches and parses the live ward activities CSV. Falls back to sample database.
+     */
+    async function loadActivities() {
+      const container = document.getElementById('activities-cards-container');
+      try {
+        console.log('Fetching live ward activities CSV...');
+        const response = await fetch(activitiesUrl);
+        if (!response.ok) {
+          throw new Error(`Sheets response error: status ${response.status}`);
+        }
+        
+        const csvText = await response.text();
+        if (!csvText) {
+          throw new Error('Sheets response returned empty text');
+        }
+        
+        const rows = parseCSV(csvText);
+        renderActivities(rows);
+        
+      } catch (error) {
+        console.warn('Unable to get live activities feed, using fallback activities database.', error);
+        
+        const rows = parseCSV(sampleActivitiesCSV);
+        
+        setTimeout(() => {
+          renderActivities(rows);
+          
+          const notice = document.createElement('div');
+          notice.className = 'alert-box';
+          notice.style.marginBottom = '1rem';
+          notice.innerHTML = `⚠️ Calendar sync error: <strong>${error.message || 'CORS restriction fallback'}</strong>. Utilizing highly robust local dataset.`;
+          container.insertBefore(notice, container.firstChild);
+        }, 500);
+      }
+    }
+
+    // Initialize and run on window load
+    function initApp() {
+      loadAgenda();
+      loadActivities();
+    }
+    window.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>
