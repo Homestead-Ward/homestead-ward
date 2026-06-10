@@ -1,1305 +1,514 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Homestead Ward Agenda</title>
-  <!-- Google Fonts for gorgeous premium typography -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Homestead Ward Program</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#eaeaeb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   
   <style>
-    /* Reset & CSS Custom Properties */
-    :root {
-      --bg-color: #eaeaeb; /* A soft, neutral mid-light gray */
-      --card-bg: #f4f4f5; /* A slightly lighter frosted gray for the cards */
-      --primary-color: #27272a; /* Elegant deep zinc accent */
-      --secondary-color: #71717a; /* Soft zinc/charcoal style for muted text */
-      --text-dark: #3f3f46; /* A soft zinc/charcoal text */
-      --border-color: rgba(63, 63, 70, 0.15); /* Sleek container border */
-      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    /* Reset & Base Overcast Theme Styles */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: var(--font-family);
-      background-color: #eaeaeb; /* A soft, neutral mid-light gray */
-      color: #3f3f46; /* A soft zinc/charcoal text */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #eaeaeb;
+      color: #3f3f46;
       line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      overflow-x: hidden;
+      padding-bottom: 75px;
     }
 
-    /* ----------------------------------------------------
-       Language visibility toggle rules
-       ---------------------------------------------------- */
-    body.show-en .lang-ht {
-      display: none !important;
-    }
-    body.show-ht .lang-en {
-      display: none !important;
-    }
-
-    /* ----------------------------------------------------
-       SPA Page Visibility rules
-       ---------------------------------------------------- */
-    .app-page {
-      display: none;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .app-page.active {
-      display: flex !important;
-    }
-
-    /* Container for Desktop Viewport Control */
-    .app-container {
-      width: 100%;
-      max-width: 480px; /* Perfect smartphone viewport limits */
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      background-color: var(--bg-color);
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
-      position: relative;
-    }
-
-    /* Premium Sticky Floating Header Layout */
+    /* Sticky Header */
     header {
       position: sticky;
       top: 0;
-      z-index: 100;
-      background-color: var(--card-bg);
-      border-bottom: 1px solid var(--border-color);
-      padding: 1.25rem 1.5rem;
+      background-color: #f4f4f5;
+      padding: 12px 16px;
       display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-      text-align: center;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      z-index: 1000;
     }
+    .header-title h1 { font-size: 1.2rem; font-weight: 700; color: #27272a; }
+    .header-title p { font-size: 0.85rem; color: #71717a; }
 
-    h1 {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: var(--text-dark);
-      letter-spacing: -0.03em;
-    }
-
-    h2 {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--secondary-color);
-      min-height: 1.25rem;
-    }
-
-    /* Segmented Control Toggle Container */
-    .header-controls {
-      display: flex;
-      justify-content: center;
-      margin-top: 0.25rem;
-    }
-
-    .segmented-control {
-      display: flex;
-      background-color: #eaeaeb; /* Neutral mid-light gray background */
-      border-radius: 9999px; /* Fully pill-shaped */
-      padding: 3px;
-      width: 100%;
-      border: 1px solid var(--border-color);
-    }
-
-    .lang-btn {
-      flex: 1;
-      padding: 0.55rem 1rem;
-      font-size: 0.85rem;
-      font-weight: 600;
+    /* Toggle Button */
+    .lang-toggle {
+      background-color: #3f3f46;
+      color: #f4f4f5;
       border: none;
-      border-radius: 9999px; /* Inner capsule element alignment */
-      background-color: transparent;
-      color: var(--secondary-color);
-      cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .lang-btn:hover {
-      color: var(--text-dark);
-    }
-
-    .lang-btn.active {
-      background-color: var(--primary-color);
-      color: #ffffff;
-      box-shadow: 0 2px 10px rgba(39, 39, 42, 0.15);
-    }
-
-    /* Main Content Area */
-    main {
-      flex: 1;
-      padding: 1.25rem;
-      padding-bottom: 5.5rem; /* Expanded bottom padding so bottom-nav never obstructs card contents */
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Elegant Page/Section Title */
-    .section-title {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--text-dark);
-      margin-top: 0.25rem;
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.02em;
-    }
-
-    /* Modern Card Class & Premium Cards (Agenda & Schedule items) */
-    .card {
-      /* A slightly lighter frosted gray for the cards */
-      background-color: #f4f4f5; 
-      /* A slightly darker shadow to give depth against the gray */
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-    }
-
-    .agenda-item {
-      /* A slightly lighter frosted gray for the cards */
-      background-color: #f4f4f5; 
-      border: 1px solid var(--border-color);
-      border-radius: 12px; /* iOS-like smooth radius corners */
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Dynamic hover effects for rich feedback */
-    .agenda-item:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    /* Column 1: Role/Topic labels or Schedule Times */
-    .agenda-role {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--secondary-color);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    /* Column 2: Person, Event details, or Hymn Names */
-    .agenda-person {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text-dark);
-    }
-
-    /* Empty items or warnings */
-    .alert-box {
-      font-size: 0.875rem;
-      color: #854d0e;
-      background-color: #fef9c3;
-      border: 1px solid #fef08a;
-      padding: 0.75rem 1rem;
-      border-radius: 0.5rem;
-      text-align: center;
-    }
-
-    /* Optional: Soft zinc/charcoal style for muted text */
-    .muted-text {
-      color: #71717a; 
-    }
-
-    .hymn-link {
-      display: block;
-      background-color: #e0f2fe;
-      color: #0369a1;
-      border-left: 4px solid #0284c7;
       padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Main Container & Page Sections */
+    main { padding: 16px; max-width: 600px; margin: 0 auto; }
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+
+    /* Card Styling */
+    .card {
+      background-color: #f4f4f5;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .card-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 8px 0;
+      border-bottom: 1px solid #e4e4e7;
+    }
+    .card-row:last-child { border-bottom: none; }
+    .role-label { font-weight: 600; color: #27272a; width: 45%; }
+    .value-label { text-align: right; width: 55%; color: #3f3f46; }
+
+    /* Hymn Interactive Button Elements */
+    .hymn-btn-link {
+      display: inline-block;
+      width: 100%;
+      padding: 8px 12px;
+      margin-top: 4px;
+      background-color: #e4e4e7;
+      border-left: 4px solid #3f3f46;
       border-radius: 4px;
       text-decoration: none;
-      font-weight: 500;
-      margin-top: 4px;
-      transition: background-color 0.2s ease, text-decoration 0.2s ease;
+      color: #3f3f46;
+      font-weight: bold;
+      text-align: left;
     }
-    
-    .hymn-link:hover,
-    .hymn-link:active {
-      background-color: #bae6fd;
+    .hymn-btn-link:hover, .hymn-btn-link:active {
+      background-color: #d4d4d8;
       text-decoration: underline;
-      color: #0369a1;
     }
 
-    /* ----------------------------------------------------
-       Premium Bottom Navigation Bar
-       ---------------------------------------------------- */
+    /* Primary Contacts Action Button */
+    .call-btn {
+      display: inline-block;
+      background-color: #3f3f46;
+      color: #f4f4f5;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* Map Link Layouts */
+    .map-link { color: #3f3f46; font-weight: 600; text-decoration: underline; }
+
+    /* Bottom Navigation Bar */
     .bottom-nav {
       position: fixed;
       bottom: 0;
+      left: 0;
       width: 100%;
-      max-width: 480px; /* Anchor exactly to smartphone layout viewport constraints */
-      background-color: #f4f4f5; /* Match card background */
-      border-top: 1px solid var(--border-color);
+      background-color: #f4f4f5;
       display: flex;
-      height: 4.5rem; /* iOS & Android density targets */
-      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
-      z-index: 100;
+      justify-content: space-around;
+      padding: 10px 0;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+      z-index: 1000;
     }
-
-    .nav-tab {
-      flex: 1;
+    .nav-item {
       background: none;
       border: none;
+      color: #71717a;
+      font-size: 0.8rem;
+      font-weight: 600;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 4px;
-      color: #71717a; /* Soft inactive zinc/charcoal style */
       cursor: pointer;
-      font-weight: 600;
-      font-size: 0.75rem;
-      padding: 0.5rem;
-      transition: all 0.2s ease-in-out;
+      width: 25%;
     }
+    .nav-item.active { color: #27272a; }
+    .nav-icon { font-size: 1.3rem; margin-bottom: 2px; }
 
-    .nav-tab:hover {
-      color: #3f3f46;
-    }
-
-    .nav-tab.active {
-      color: var(--primary-color);
-    }
-
-    .nav-tab .nav-icon {
-      transition: transform 0.2s ease;
-      stroke: currentColor;
-    }
-
-    .nav-tab.active .nav-icon {
-      transform: scale(1.1);
-      stroke: var(--primary-color);
-    }
-
-    /* Shimmer Loading Animation blocks */
-    .shimmer-container {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .shimmer-card {
-      height: 74px;
-      background: linear-gradient(90deg, #f4f4f5 25%, #eaeaeb 50%, #f4f4f5 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: 12px;
-    }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
+    /* Language Switch Visibility Rules */
+    [lang="ht"] { display: none; }
+    body.kreyol [lang="en"] { display: none; }
+    body.kreyol [lang="ht"] { display: block; }
   </style>
 </head>
-<body class="show-en"> <!-- Premium design defaults instantly to english mode representation -->
+<body>
 
-  <!-- App wrapper to ensure smart responsive mobile layout styling -->
-  <div class="app-container">
-    
-    <header>
-      <h1 id="main-title">Homestead Ward</h1>
-      <h2 id="agenda-date"></h2>
-      
-      <div class="header-controls">
-        <!-- Elegant Segmented Control Toggle Pill selection -->
-        <div class="segmented-control">
-          <button class="lang-btn active" id="btn-en" onclick="setLanguage('en')">English</button>
-          <button class="lang-btn" id="btn-ht" onclick="setLanguage('ht')">Kreyòl</button>
-        </div>
+  <header>
+    <div class="header-title">
+      <h1 id="header-date">Loading...</h1>
+      <p><span lang="en">Homestead Ward</span><span lang="ht">Pawas Homestead</span></p>
+    </div>
+    <button class="lang-toggle" onclick="toggleLanguage()">Kreyòl</button>
+  </header>
+
+  <main>
+    <div id="agenda-page" class="page-section active"></div>
+
+    <div id="hymns-page" class="page-section">
+      <div class="card">
+        <h3 style="margin-bottom:12px;"><span lang="en">Selected Hymns</span><span lang="ht">Kantik Chwazi yo</span></h3>
+        <div id="hymns-list-container"></div>
       </div>
-    </header>
+    </div>
 
-    <main>
-      
-      <!-- SPA Page 1: Agile Church Agenda List -->
-      <div id="page-agenda" class="app-page active">
-        <div id="agenda-cards-container">
-          <!-- Shimmer effect initially while loading agenda properties -->
-          <div class="shimmer-container">
-            <div class="shimmer-card"></div>
-            <div class="shimmer-card"></div>
-            <div class="shimmer-card"></div>
-            <div class="shimmer-card"></div>
-            <div class="shimmer-card"></div>
-          </div>
-        </div>
-      </div>
+    <div id="calendar-page" class="page-section"></div>
 
-      <!-- SPA Page 2: Bilingual Meeting Schedule -->
-      <div id="page-schedule" class="app-page">
-        <h3 class="section-title" style="text-align: center; margin-bottom: 0.5rem;">
-          <span class="lang-en">Meeting Schedule</span>
-          <span class="lang-ht">Orè Reyinyon</span>
-        </h3>
+    <div id="contacts-page" class="page-section"></div>
+  </main>
 
-        <!-- Card 1 -->
-        <div class="agenda-item">
-          <div class="agenda-role">
-            <span class="lang-en">12:40 PM – 1:30 PM</span>
-            <span class="lang-ht">12:40 PM – 1:30 PM</span>
-          </div>
-          <div class="agenda-person">
-            <span class="lang-en">Primary (Every Sunday)</span>
-            <span class="lang-ht">Primè (Chak Dimanch)</span>
-          </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="agenda-item">
-          <div class="agenda-role">
-            <span class="lang-en">1st & 3rd Sundays</span>
-            <span class="lang-ht">1er ak 3èm Dimanch</span>
-          </div>
-          <div class="agenda-person">
-            <span class="lang-en">Sunday School</span>
-            <span class="lang-ht">Lekòl di Dimanch</span>
-          </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="agenda-item">
-          <div class="agenda-role">
-            <span class="lang-en">2nd & 4th Sundays</span>
-            <span class="lang-ht">2èm ak 4èm Dimanch</span>
-          </div>
-          <div class="agenda-person">
-            <span class="lang-en">Priesthood, Relief Society, & Young Women</span>
-            <span class="lang-ht">Prètriz, Sosyete Sekou, & Jèn Fi</span>
-          </div>
-        </div>
-
-        <!-- Card 4 -->
-        <div class="agenda-item">
-          <div class="agenda-role">
-            <span class="lang-en">5th Sundays</span>
-            <span class="lang-ht">5èm Dimanch</span>
-          </div>
-          <div class="agenda-person">
-            <span class="lang-en">Combined Youth & Adults</span>
-            <span class="lang-ht">Reyinyon Konbine</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- SPA Page 3: Live Activities Feed -->
-      <div id="page-activities" class="app-page">
-        <h2 class="section-title" style="text-align: center; margin-bottom: 0.5rem;">
-          <span class="lang-en">Upcoming Activities</span>
-          <span class="lang-ht">Aktivite k ap vini yo</span>
-        </h2>
-        <div id="activities-cards-container">
-          <!-- Shimmer effect initially while loading activities -->
-          <div class="shimmer-container">
-            <div class="shimmer-card"></div>
-            <div class="shimmer-card"></div>
-            <div class="shimmer-card"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SPA Page 4: Contacts Directory -->
-      <div id="page-contacts" class="app-page">
-        <h2 class="section-title" style="text-align: center; margin-bottom: 0.5rem;">
-          <span class="lang-en">Ward Leadership</span>
-          <span class="lang-ht">Dirijan Pawas yo</span>
-        </h2>
-        <div id="contacts-cards-container">
-          <!-- Shimmer effect initially while loading contacts -->
-          <div class="shimmer-container">
-            <div class="shimmer-card"></div>
-            <div class="shimmer-card"></div>
-            <div class="shimmer-card"></div>
-          </div>
-        </div>
-      </div>
-
-    </main>
-
-    <!-- Bottom Navigation Bar (Constructed with tap-friendly targets of 4.5rem/72px height, spaced evenly) -->
-    <nav class="bottom-nav">
-      <button class="nav-tab active" id="tab-agenda" onclick="showPage('page-agenda', 'tab-agenda')">
-        <!-- SVG calendar/list icon styling -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
-        <span class="lang-en">Agenda</span>
-        <span class="lang-ht">Pwogram</span>
-      </button>
-      <button class="nav-tab" id="tab-schedule" onclick="showPage('page-schedule', 'tab-schedule')">
-        <!-- SVG clock/calendar icon styling for schedule -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span class="lang-en">Schedule</span>
-        <span class="lang-ht">Orè</span>
-      </button>
-      <button class="nav-tab" id="tab-activities" onclick="showPage('page-activities', 'tab-activities')">
-        <!-- SVG bell/activity icon styling -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-        <span class="lang-en">Activities</span>
-        <span class="lang-ht">Aktivite</span>
-      </button>
-      <button class="nav-tab" id="tab-contacts" onclick="showPage('page-contacts', 'tab-contacts')">
-        <!-- SVG contacts book overlay -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <span class="lang-en">Contacts</span>
-        <span class="lang-ht">Kontak</span>
-      </button>
-    </nav>
-
-  </div>
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchPage('agenda-page', this)">
+      <span class="nav-icon">📋</span><span lang="en">Agenda</span><span lang="ht">Pwogram</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('hymns-page', this)">
+      <span class="nav-icon">🎵</span><span lang="en">Hymns</span><span lang="ht">Kantik</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('calendar-page', this)">
+      <span class="nav-icon">📅</span><span lang="en">Calendar</span><span lang="ht">Kalandriye</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('contacts-page', this)">
+      <span class="nav-icon">📞</span><span lang="en">Contacts</span><span lang="ht">Chèf yo</span>
+    </button>
+  </nav>
 
   <script>
-    // ----------------------------------------------------
-    // Requirements Constant Definition
-    // ----------------------------------------------------
-    const inputUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=985081503&single=true&output=csv';
-    const hymnsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=310487653&single=true&output=csv';
-    const glossaryUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=0&single=true&output=csv';
-    const activitiesUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=645367649&single=true&output=csv';
-    const contactsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=1342129738&single=true&output=csv';
-    const hymnDbUrl = 'YOUR_HYMN_DATABASE_CSV_URL_HERE';
+    // Live Dynamic CSV Endpoints configured with exact Tab GIDs
+    const inputUrl = 'https://docs.google.com/spreadsheets/d/1o3HYB6MUIagGuiZmeOigMaz-7WGI0X_7XiMMQFr6OlU/export?format=csv&gid=985081503';
+    const glossaryUrl = 'https://docs.google.com/spreadsheets/d/1o3HYB6MUIagGuiZmeOigMaz-7WGI0X_7XiMMQFr6OlU/export?format=csv&gid=0';
+    const activitiesUrl = 'https://docs.google.com/spreadsheets/d/1o3HYB6MUIagGuiZmeOigMaz-7WGI0X_7XiMMQFr6OlU/export?format=csv&gid=645367649';
+    const contactsUrl = 'https://docs.google.com/spreadsheets/d/1o3HYB6MUIagGuiZmeOigMaz-7WGI0X_7XiMMQFr6OlU/export?format=csv&gid=1342129738';
+    const hymnsUrl = 'https://docs.google.com/spreadsheets/d/1o3HYB6MUIagGuiZmeOigMaz-7WGI0X_7XiMMQFr6OlU/export?format=csv&gid=310487653';
+    const hymnDbUrl = 'https://docs.google.com/spreadsheets/d/1o3HYB6MUIagGuiZmeOigMaz-7WGI0X_7XiMMQFr6OlU/export?format=csv&gid=379670009';
 
-    // Global Maps for Hymn Links
-    const engHymnLinks = new Map();
-    const fraHymnLinks = new Map();
+    // App Memory Maps
+    let glossaryMap = new Map();
+    let hymnsMap = new Map();
+    let engHymnLinks = new Map();
+    let fraHymnLinks = new Map();
 
-    // ----------------------------------------------------
-    // Robust Bilingual Default Sample Data Fallbacks
-    // These parse and render offline configurations immediately
-    // if the Google Sheets API is rate-limited or fails.
-    // ----------------------------------------------------
-    const sampleInputCSV = `Date:,June 7, 2026 / 7 Jwen 2026
-Presiding,President William Davis
-Conducting,Bishop Marcus Young
-Opening Hymn,58
-Invocation,Sister Sarah Jenkins
-Ward Business,Brother Michael Adams
-Sacrament Hymn,191
-Passing of the Sacrament,The Aaronic Priesthood
-Speaker,Sister Alisha Paul
-Youth Speaker,Brother Ethan Brown
-Intermediate Hymn,136
-Speaker,Elder Jordan Miller
-Closing Hymn,166
-Benediction,Sister Rose Marie Beauvais`;
+    // Standard CSV Parser handling text quotes correctly
+    function parseCSV(text) {
+      let lines = text.split(/\r?\n/);
+      return lines.map(line => {
+        let result = [];
+        let current = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          let char = line[i];
+          if (char === '"') {
+            inQuotes = !inQuotes;
+          } else if (char === ',' && !inQuotes) {
+            result.push(current.trim());
+            current = '';
+          } else {
+            current += char;
+          }
+        }
+        result.push(current.trim());
+        return result;
+      });
+    }
 
-    const sampleGlossaryCSV = `English,Haitian Creole
-Date:,Dat:
-Presiding,Preside
-Conducting,Kondui
-Opening Hymn,Kantik Ouvèti
-Invocation,Priyè Ouvèti
-Ward Business,Afè Pawas la
-Sacrament Hymn,Kantik Sentsèn
-Passing of the Sacrament,Distribisyon Sentsèn nan
-Speaker,Diskour
-Youth Speaker,Jenn ki pou Pale
-Intermediate Hymn,Kantik Entèmedyè
-Closing Hymn,Kantik Klòti
-Benediction,Priyè Klòti
-Testimonies,Temwayaj
-Bishop,Evèk
-1st Counselor,1ye Konsèye
-2nd Counselor,2yèm Konsèye
-EQ President,Prezidan Kòwonm Èldè yo
-RS President,Prezidan Sosyete Sekou a
-YW President,Prezidan Jèn Fi yo
-Primary President,Prezidan Primè a
-Ward Mission Leader,Dirijan Misyon Pawas la
-English Missionaries,Misyonè Anglè yo
-Creole Missionaries,Misyonè Kreyòl yo`;
+    // Direct parser for the Scraped Raw Hymn Links data
+    function parseRawHymnDb(text) {
+      let lines = text.split(/\r?\n/);
+      lines.forEach((line, index) => {
+        if (index === 0 || !line.trim()) return;
+        let lastComma = line.lastIndexOf(',');
+        if (lastComma === -1) return;
+        let title = line.substring(0, lastComma).replace(/^"|"$/g, '').trim();
+        let url = line.substring(lastComma + 1).replace(/^"|"$/g, '').trim();
 
-    const sampleHymnsCSV = `EN Num,EN Title,FR Num,FR Title
-58,Come\\, Ye Children of the Lord,58,Vini\\, nou Menm Pitit Senyè a (No. 58)
-191,As Now We Take the Sacrament,191,Pandan N-ap Pran Sentsèn nan (No. 191)
-136,I Know That My Redeemer Lives,136,Mwen Konnen Ransatè m nan Viv (No. 136)
-166,Abide with Me!,166,Rete avè m! (No. 166)`;
+        // Extract numbers directly following console flags (e.g. matching 15 out of VM554:15 15. Title)
+        let numMatch = title.match(/VM\d+:\d+\s+(\d+)\./);
+        if (numMatch) {
+          let hymnNum = numMatch[1];
+          if (url.includes('lang=eng')) {
+            engHymnLinks.set(hymnNum, url);
+          } else if (url.includes('lang=fra')) {
+            fraHymnLinks.set(hymnNum, url);
+          }
+        }
+      });
+    }
 
-    // Global reference to the loaded glossary map for bilingual translation
-    let latestGlossaryMap = {};
+    // Interactive Tab Page Switcher
+    function switchPage(pageId, btnElement) {
+      document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      btnElement.classList.add('active');
+      window.scrollTo(0,0);
+    }
 
-    /**
-     * Translates English honorifics within a name/value string to Kreyòl equivalents using the glossary map.
-     */
+    // Language Toggle logic
+    function toggleLanguage() {
+      const body = document.body;
+      const btn = document.querySelector('.lang-toggle');
+      if (body.classList.contains('kreyol')) {
+        body.classList.remove('kreyol');
+        btn.innerText = "Kreyòl";
+      } else {
+        body.classList.add('kreyol');
+        btn.innerText = "English";
+      }
+    }
+
+    // Honorific Filter & Title Translator Layer
     function translateName(valueString) {
       if (!valueString) return '';
-      let translated = valueString;
-      const gMap = latestGlossaryMap || {};
+      let parsed = valueString;
 
-      // Check for standalone "By Invitation" (case-insensitive)
-      const byInvRegex = /\bby\s+invitation\b/gi;
-      translated = translated.replace(byInvRegex, (match) => {
-        const lookup = gMap[match.toLowerCase()];
-        if (lookup) return lookup;
-        return "Sou Envitasyon"; // Robust fallback
-      });
+      // Handle placeholder conversions case-insensitively
+      if (parsed.toLowerCase().includes('by invitation')) {
+        let replacement = glossaryMap.get('By Invitation') || 'Sou Envitasyon';
+        parsed = parsed.replace(/by invitation/i, replacement);
+      }
 
-      // Explicitly check and replace: "Brother", "Sister", "President", "Bishop", "Elder"
-      const titles = ["Brother", "Sister", "President", "Bishop", "Elder"];
+      // Safe isolated word replacements using boundaries
+      const titles = ['Brother', 'Sister', 'President', 'Bishop', 'Elder'];
       titles.forEach(title => {
-        const regex = new RegExp('\\b' + title + '\\b', 'gi');
-        translated = translated.replace(regex, (match) => {
-          const lookup = gMap[match] || gMap[match.toLowerCase()];
-          if (lookup) return lookup;
-          
-          // Safe robust hardcoded fallbacks
-          const lower = match.toLowerCase();
-          if (lower === 'brother') return 'Frè';
-          if (lower === 'sister') return 'Sè';
-          if (lower === 'president') return 'Prezidan';
-          if (lower === 'bishop') return 'Evèk';
-          if (lower === 'elder') return 'Èldè';
-          return match;
-        });
-      });
-
-      // Replace standalone " & " with " ak "
-      translated = translated.replace(/\s+&\s+/g, ' ak ');
-      // Replace standalone " and " with " ak "
-      translated = translated.replace(/\band\b/gi, 'ak');
-
-      return translated;
-    }
-
-    /**
-     * Splits values by the " / " delimiter.
-     * If the delimiter is present, it returns an object with english (en) and kreyol (ht) parts.
-     * Otherwise it duplicates the value for both codes.
-     */
-    function splitLanguages(rawText) {
-      if (!rawText) {
-        return { en: '', ht: '' };
-      }
-      if (rawText.includes(' / ')) {
-        const parts = rawText.split(' / ');
-        return {
-          en: parts[0] ? parts[0].trim() : '',
-          ht: parts[1] ? parts[1].trim() : ''
-        };
-      }
-      return {
-        en: rawText.trim(),
-        textHt: rawText.trim(),
-        ht: rawText.trim()
-      };
-    }
-
-    /**
-     * Parsing of CSV text into rows, supporting values surrounded inside quotes.
-     */
-    function parseCSV(text) {
-      if (!text) return [];
-      
-      const rawRows = text.split(/\r?\n/);
-      const parsedRows = [];
-
-      for (let i = 0; i < rawRows.length; i++) {
-        const rowText = rawRows[i].trim();
-        if (!rowText) continue; // Skip completely empty rows
-        
-        const cols = [];
-        let insideQuote = false;
-        let entry = '';
-        
-        for (let c = 0; c < rowText.length; c++) {
-          const char = rowText[c];
-          if (char === '"') {
-            insideQuote = !insideQuote;
-          } else if (char === ',' && !insideQuote) {
-            cols.push(entry);
-            entry = '';
-          } else {
-            entry += char;
-          }
-        }
-        cols.push(entry);
-        
-        // Clean columns, remove surrounding quotes and escaped comments
-        const cleanedCols = cols.map(val => {
-          let trimmed = val.trim();
-          if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
-            trimmed = trimmed.substring(1, trimmed.length - 1).trim();
-          }
-          trimmed = trimmed.replace(/\\,/g, ',');
-          trimmed = trimmed.replace(/""/g, '"');
-          return trimmed;
-        });
-        
-        parsedRows.push(cleanedCols);
-      }
-      
-      return parsedRows;
-    }
-
-    /**
-     * Switch language toggles between 'en' and 'ht' values
-     */
-    function setLanguage(lang) {
-      const body = document.body;
-      const btnEn = document.getElementById('btn-en');
-      const btnHt = document.getElementById('btn-ht');
-
-      if (lang === 'en') {
-        body.classList.remove('show-ht');
-        body.classList.add('show-en');
-        btnEn.classList.add('active');
-        btnHt.classList.remove('active');
-      } else if (lang === 'ht') {
-        body.classList.remove('show-en');
-        body.classList.add('show-ht');
-        btnHt.classList.add('active');
-        btnEn.classList.remove('active');
-      }
-    }
-
-    /**
-     * SPA Toggles between active pages and highlights navigation tabs
-     */
-    function showPage(pageId, tabId) {
-      // Deactivate all pages
-      const pages = document.querySelectorAll('.app-page');
-      pages.forEach(p => p.classList.remove('active'));
-
-      // Deactivate all tabs
-      const tabs = document.querySelectorAll('.nav-tab');
-      tabs.forEach(t => t.classList.remove('active'));
-
-      // Activate chosen page & tab
-      const selectedPage = document.getElementById(pageId);
-      if (selectedPage) {
-        selectedPage.classList.add('active');
-      }
-
-      const selectedTab = document.getElementById(tabId);
-      if (selectedTab) {
-        selectedTab.classList.add('active');
-      }
-
-      // Smooth bounce scroll to top of device screen
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }
-
-    /**
-     * Renders parsed Input rows using Glossary and Hymn information map.
-     */
-    function renderAgenda(inputRows, glossaryMap, hymnsMap) {
-      const agendaDateEl = document.getElementById('agenda-date');
-      const container = document.getElementById('agenda-cards-container');
-
-      // Clear loading elements (such as shimmer spinner)
-      container.innerHTML = '';
-
-      if (!inputRows || inputRows.length === 0) {
-        container.innerHTML = '<div class="alert-box">No agenda data found.</div>';
-        return;
-      }
-
-      // Extract the date from the very first row
-      const firstRow = inputRows[0];
-      let rawDateText = '';
-      if (firstRow) {
-        if (firstRow.length >= 2) {
-          const firstCell = firstRow[0].toLowerCase();
-          if (firstCell.includes('date')) {
-            rawDateText = firstRow.slice(1).join(', ').trim();
-          } else {
-            rawDateText = firstRow.join(', ').trim();
-          }
-        } else if (firstRow[0]) {
-          rawDateText = firstRow[0].replace(/Date:?/i, '').trim();
-        }
-      }
-
-      // Robust Date Parsing: trim excess whitespace
-      rawDateText = rawDateText.trim();
-
-      // Handle legacy bilingual mock strings "June 7, 2026 / 7 Jwen 2026"
-      let cleanDateText = rawDateText;
-      if (cleanDateText.includes(' / ')) {
-        cleanDateText = cleanDateText.split(' / ')[0].trim();
-      }
-
-      // Create a standard JavaScript Date object
-      let parsedDate = new Date(cleanDateText);
-      if (isNaN(parsedDate.getTime())) {
-        parsedDate = new Date(); // Safe fallback to current date if parsing fails
-      }
-
-      // UI Formatting (Header) using Intl.DateTimeFormat for English as "Month Day, Year"
-      const optionsEn = { year: 'numeric', month: 'long', day: 'numeric' };
-      const formattedDateEn = new Intl.DateTimeFormat('en-US', optionsEn).format(parsedDate);
-
-      // Format elegant Haitian Creole equivalent bilingually
-      const htMonths = ["Janvye", "Fevriye", "Mas", "Avril", "Me", "Jwen", "Jiyè", "Out", "Sektanm", "Oktòb", "Novanm", "Desanm"];
-      const day = parsedDate.getDate();
-      const monthIndex = parsedDate.getMonth();
-      const year = parsedDate.getFullYear();
-      const formattedDateHt = `${day} ${htMonths[monthIndex]} ${year}`;
-
-      agendaDateEl.innerHTML = `
-        <span class="lang-en">${formattedDateEn}</span>
-        <span class="lang-ht">${formattedDateHt}</span>
-      `;
-
-      // Fast Sunday Logic Verification: strictly use .getDate()
-      const isFirstSunday = parsedDate.getDate() <= 7;
-
-      // Loop remaining rows starting from row 1 (index 1)
-      const remainingRows = inputRows.slice(1);
-      let renderCount = 0;
-
-      remainingRows.forEach(([role, val]) => {
-        // Skip valid but completely empty pairs
-        if (!role || !role.trim()) return;
-
-        const roleTrimmed = role.trim();
-        const valTrimmed = (val || '').trim();
-
-        const roleLower = roleTrimmed.toLowerCase();
-        const isSpeakerOrInterHymn = roleLower.includes('speaker') || roleLower.includes('intermediate hymn');
-
-        // Skip "Business", "Ward Business", or "Stake Business" if value is completely blank
-        if (roleLower.includes('business') && !valTrimmed) {
-          return;
-        }
-
-        // Smart routing logic based on Fast Sunday vs Standard Sunday
-        if (isFirstSunday) {
-          if (isSpeakerOrInterHymn) {
-            return; // Skip speakers and intermediate hymns on Fast Sunday
-          }
-        } else {
-          if (isSpeakerOrInterHymn && !valTrimmed) {
-            return; // Skip if a speaker or intermediate hymn is unassigned/empty in standard layout
-          }
-        }
-
-        // Get English and Haitian Creole translated label
-        const roleEn = roleTrimmed;
-        const roleHt = glossaryMap[roleTrimmed] || glossaryMap[roleTrimmed.toLowerCase()] || roleTrimmed;
-
-        // Check if item contains "Hymn"
-        const isHymn = roleTrimmed.toLowerCase().includes('hymn');
-
-        let enText = valTrimmed;
-        let htText = valTrimmed;
-
-        if (isHymn && valTrimmed) {
-          // Helper to find hymn inside map
-          const lookupHymn = (v) => {
-            if (!v) return null;
-            if (hymnsMap[v]) return hymnsMap[v];
-            const matches = v.match(/\d+/);
-            if (matches && hymnsMap[matches[0]]) return hymnsMap[matches[0]];
-            return null;
-          };
-
-          const hymn = lookupHymn(valTrimmed);
-          if (hymn) {
-            let enTitleText = `${valTrimmed}. ${hymn.enTitle}`;
-            let htTitleText = `${hymn.frNum || valTrimmed}. ${hymn.frTitle || hymn.enTitle}`;
-
-            // Parse the English hymn number out of the string (the text before the period)
-            const parsedEnNum = enTitleText.split('.')[0].trim();
-            const engUrl = engHymnLinks.get(parsedEnNum);
-            enText = engUrl ? `<a href="${engUrl}" target="_blank" class="hymn-link">${enTitleText}</a>` : enTitleText;
-
-            // Parse the French hymn number out of the string (the text before the period)
-            const parsedFrNum = htTitleText.split('.')[0].trim();
-            const fraUrl = fraHymnLinks.get(parsedFrNum);
-            htText = fraUrl ? `<a href="${fraUrl}" target="_blank" class="hymn-link">${htTitleText}</a>` : htTitleText;
-          } else {
-            enText = valTrimmed;
-            htText = valTrimmed;
-          }
-        } else if (valTrimmed) {
-          htText = translateName(valTrimmed);
-        }
-
-        // Create the agenda-item div
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'agenda-item';
-
-        // Column 1 element: Role Label
-        const roleEl = document.createElement('div');
-        roleEl.className = 'agenda-role';
-        roleEl.innerHTML = `
-          <span class="lang-en">${roleEn}</span>
-          <span class="lang-ht">${roleHt}</span>
-        `;
-
-        // Column 2 element: Value/Person/Hymn
-        const personEl = document.createElement('div');
-        personEl.className = 'agenda-person';
-        personEl.innerHTML = `
-          <span class="lang-en">${enText || '—'}</span>
-          <span class="lang-ht">${htText || '—'}</span>
-        `;
-
-        // Append components vertically to card
-        itemDiv.appendChild(roleEl);
-        itemDiv.appendChild(personEl);
-
-        // Put card into content stream
-        container.appendChild(itemDiv);
-        renderCount++;
-
-        // Fast Sunday Testimonies card injection immediately following the Sacrament administration row
-        const isSacramentRow = roleTrimmed.toLowerCase().includes('sacrament') && !roleTrimmed.toLowerCase().includes('hymn');
-        if (isFirstSunday && isSacramentRow) {
-          const testDiv = document.createElement('div');
-          testDiv.className = 'agenda-item';
-
-          const testRoleEl = document.createElement('div');
-          testRoleEl.className = 'agenda-role';
-          const testEn = 'Testimonies';
-          const testHt = glossaryMap['testimonies'] || glossaryMap['Testimonies'] || 'Temwayaj';
-          testRoleEl.innerHTML = `
-            <span class="lang-en">${testEn}</span>
-            <span class="lang-ht">${testHt}</span>
-          `;
-          testDiv.appendChild(testRoleEl);
-
-          container.appendChild(testDiv);
-          renderCount++;
+        let regex = new RegExp('\\b' + title + '\\b', 'g');
+        if (glossaryMap.has(title)) {
+          parsed = parsed.replace(regex, glossaryMap.get(title));
         }
       });
 
-      if (renderCount === 0) {
-        container.innerHTML = '<div class="alert-box">The agenda lists no current details.</div>';
-      }
+      // Simple structure couplers
+      parsed = parsed.replace(/\s+&\s+/g, ' ak ');
+      parsed = parsed.replace(/\s+and\s+/g, ' ak ');
+
+      return parsed;
     }
 
-    /**
-     * Main flow: Fetch all five inputs concurrently or fallback elegantly
-     */
-    async function loadAgenda() {
-      const container = document.getElementById('agenda-cards-container');
-      const contactsContainer = document.getElementById('contacts-cards-container');
-      
+    // Format Date strings dynamically
+    function formatAppDate(dateStr) {
+      if (!dateStr) return 'Sunday Service';
+      let parts = dateStr.split('/');
+      if (parts.length !== 3) return dateStr;
+      let dateObj = new Date(parts[2], parts[0] - 1, parts[1]);
+      let optionsEng = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+      return dateObj.toLocaleDateString('en-US', optionsEng);
+    }
+
+    // Safe Hymn String Link Wrapping
+    function makeHymnMarkup(hymnString, isEnglish) {
+      if (!hymnString) return '';
+      let cleanStr = hymnString.replace(/^"|"$/g, '').trim();
+      let numMatch = cleanStr.match(/^(\d+)\./);
+      if (numMatch) {
+        let num = numMatch[1];
+        let link = isEnglish ? engHymnLinks.get(num) : fraHymnLinks.get(num);
+        if (link) {
+          return `<a href="${link}" target="_blank" class="hymn-btn-link">🎵 ${cleanStr}</a>`;
+        }
+      }
+      return cleanStr;
+    }
+
+    // Main App Core Initializer
+    async function initApp() {
       try {
-        console.log('Fetching church sheets concurrently...');
-        
-        const [inputRes, hymnsRes, glossaryRes, contactsRes, hymnDbRes] = await Promise.all([
-          fetch(inputUrl),
-          fetch(hymnsUrl),
-          fetch(glossaryUrl),
-          fetch(contactsUrl),
-          fetch(hymnDbUrl).catch(() => new Response(''))
+        const [inputRaw, glossaryRaw, activitiesRaw, contactsRaw, hymnsRaw, hymnDbRaw] = await Promise.all([
+          fetch(inputUrl).then(r => r.text()),
+          fetch(glossaryUrl).then(r => r.text()),
+          fetch(activitiesUrl).then(r => r.text()),
+          fetch(contactsUrl).then(r => r.text()),
+          fetch(hymnsUrl).then(r => r.text()),
+          fetch(hymnDbUrl).then(r => r.text())
         ]);
 
-        if (!inputRes.ok || !hymnsRes.ok || !glossaryRes.ok || !contactsRes.ok) {
-          throw new Error('One or more spreadsheet feeds returned response errors');
+        // 1. Process Master Hymn Databases
+        parseRawHymnDb(hymnDbRaw);
+
+        // 2. Process Glossary Map
+        let glossaryData = parseCSV(glossaryRaw);
+        glossaryData.forEach((row, i) => {
+          if (i > 0 && row[0] && row[1]) glossaryMap.set(row[0], row[1]);
+        });
+
+        // 3. Process Weekly Selection Hymns Mapping
+        let hymnsData = parseCSV(hymnsRaw);
+        hymnsData.forEach((row, i) => {
+          if (i > 0 && row[0]) hymnsMap.set(row[0], { en: row[1] || '', ht: row[2] || '' });
+        });
+
+        // 4. Render Agenda with Business Hiding & Fast Sunday swap logic
+        let agendaData = parseCSV(inputRaw);
+        let dateHeader = document.getElementById('header-date');
+        if (agendaData[0] && agendaData[0][1]) {
+          dateHeader.innerText = formatAppDate(agendaData[0][1]);
         }
 
-        const [inputText, hymnsText, glossaryText, contactsText, hymnDbText] = await Promise.all([
-          inputRes.text(),
-          hymnsRes.text(),
-          glossaryRes.text(),
-          contactsRes.text(),
-          hymnDbRes ? hymnDbRes.text() : Promise.resolve('')
-        ]);
-
-        // Parsing
-        const parsedInput = parseCSV(inputText);
-        const parsedGlossary = parseCSV(glossaryText);
-        const parsedHymns = parseCSV(hymnsText);
-        const parsedContacts = parseCSV(contactsText);
-        const parsedHymnDb = parseCSV(hymnDbText);
-
-        // Populate Hymn Links Maps
-        engHymnLinks.clear();
-        fraHymnLinks.clear();
-        for (let i = 1; i < parsedHymnDb.length; i++) {
-          const row = parsedHymnDb[i];
-          if (!row) continue;
-          
-          const enNum = row[0] ? row[0].trim() : '';
-          const enUrl = row[2] ? row[2].trim() : '';
-          const frNum = row[3] ? row[3].trim() : '';
-          const frUrl = row[5] ? row[5].trim() : '';
-
-          if (enNum && enUrl) {
-            engHymnLinks.set(enNum, enUrl);
-          }
-          if (frNum && frUrl) {
-            fraHymnLinks.set(frNum, frUrl);
-          }
+        let isFastSunday = false;
+        if (agendaData[1] && agendaData[1][0] === "Fast Sunday Check" && agendaData[1][1] === "TRUE") {
+          isFastSunday = true;
         }
 
-        // Building glossary map
-        const glossaryMap = {};
-        parsedGlossary.forEach(row => {
-          if (row && row.length >= 2) {
-            const en = row[0].trim();
-            const ht = row[1].trim();
-            glossaryMap[en] = ht;
-            glossaryMap[en.toLowerCase()] = ht;
+        let agendaContainer = document.getElementById('agenda-page');
+        let agendaHtml = `<div class="card">`;
+
+        for (let i = 2; i < agendaData.length; i++) {
+          let role = agendaData[i][0];
+          let val = agendaData[i][1] || '';
+
+          if (!role) continue;
+
+          // Smart Row Hiding logic for business fields
+          if (role.toLowerCase().includes('business') && val.trim() === '') {
+            continue; 
           }
-        });
-        latestGlossaryMap = glossaryMap; // Save to global variable
 
-        // Building hymns map
-        const hymnsMap = {};
-        parsedHymns.forEach(row => {
-          if (row && row.length >= 4) {
-            const enNum = row[0].trim();
-            const enTitle = row[1].trim();
-            const frNum = row[2].trim();
-            const frTitle = row[3].trim();
-            hymnsMap[enNum] = { enTitle, frNum, frTitle };
+          let roleKreyol = glossaryMap.get(role) || role;
+
+          // Fast Sunday Logic Intercept
+          if (isFastSunday && role.toLowerCase().includes('sacrament')) {
+            agendaHtml += `
+              <div class="card-row" style="background-color:#e4e4e7; padding:12px; border-radius:6px; flex-direction:column; align-items:stretch;">
+                <div style="font-weight:bold; color:#27272a; margin-bottom:4px;">
+                  <span lang="en">Bearing of Testimonies</span>
+                  <span lang="ht">Pataje Temwayaj yo</span>
+                </div>
+                <div style="font-size:0.9rem; color:#3f3f46;">
+                  <span lang="en">After the administration of the Sacrament, the time will be turned over to the congregation for the bearing of testimonies.</span>
+                  <span lang="ht">Apre administrasyon Sentsèn nan, y ap bay kongregasyon an tan pou yo pataje temwayaj yo.</span>
+                </div>
+              </div>`;
+            continue;
           }
-        });
 
-        // Render
-        renderAgenda(parsedInput, glossaryMap, hymnsMap);
-        renderContacts(parsedContacts, glossaryMap);
+          // Handle Custom Music/Hymn row configurations
+          if (role.toLowerCase().includes('hymn')) {
+            let mapping = hymnsMap.get(role);
+            let hymnEnText = mapping ? mapping.en : val;
+            let hymnHtText = mapping ? mapping.ht : val;
 
-      } catch (error) {
-        console.warn('Network fetching failed or was blocked. Using robust offline join model matching raw sheets.', error);
-        
-        // Load fallback CSV datasets
-        const parsedInput = parseCSV(sampleInputCSV);
-        const parsedGlossary = parseCSV(sampleGlossaryCSV);
-        const parsedHymns = parseCSV(sampleHymnsCSV);
-        const parsedContacts = parseCSV(sampleContactsCSV);
+            let finalLinkEn = makeHymnMarkup(hymnEnText, true);
+            let finalLinkHt = makeHymnMarkup(hymnHtText, false);
 
-        // Build fallback maps
-        const glossaryMap = {};
-        parsedGlossary.forEach(row => {
-          if (row && row.length >= 2) {
-            const en = row[0].trim();
-            const ht = row[1].trim();
-            glossaryMap[en] = ht;
-            glossaryMap[en.toLowerCase()] = ht;
+            agendaHtml += `
+              <div class="card-row">
+                <div class="role-label"><span lang="en">${role}</span><span lang="ht">${roleKreyol}</span></div>
+                <div class="value-label">
+                  <span lang="en">${finalLinkEn}</span>
+                  <span lang="ht">${finalLinkHt}</span>
+                </div>
+              </div>`;
+            continue;
           }
-        });
-        latestGlossaryMap = glossaryMap; // Save to global variable
 
-        const hymnsMap = {};
-        parsedHymns.forEach(row => {
-          if (row && row.length >= 4) {
-            const enNum = row[0].trim();
-            const enTitle = row[1].trim();
-            const frNum = row[2].trim();
-            const frTitle = row[3].trim();
-            hymnsMap[enNum] = { enTitle, frNum, frTitle };
+          // Standard row generation path
+          agendaHtml += `
+            <div class="card-row">
+              <div class="role-label"><span lang="en">${role}</span><span lang="ht">${roleKreyol}</span></div>
+              <div class="value-label">
+                <span lang="en">${val}</span>
+                <span lang="ht">${translateName(val)}</span>
+              </div>
+            </div>`;
+        }
+        agendaHtml += `</div>`;
+        agendaContainer.innerHTML = agendaHtml;
+
+        // 5. Render Selected Hymns Tab Page list layout
+        let hymnsListContainer = document.getElementById('hymns-list-container');
+        let hymnsListHtml = '';
+        hymnsMap.forEach((data, roleName) => {
+          let roleKreyol = glossaryMap.get(roleName) || roleName;
+          let linkEn = makeHymnMarkup(data.en, true);
+          let linkHt = makeHymnMarkup(data.ht, false);
+          hymnsListHtml += `
+            <div class="card-row">
+              <div class="role-label"><span lang="en">${roleName}</span><span lang="ht">${roleKreyol}</span></div>
+              <div class="value-label">
+                <span lang="en">${linkEn}</span>
+                <span lang="ht">${linkHt}</span>
+              </div>
+            </div>`;
+        });
+        hymnsListContainer.innerHTML = hymnsListHtml;
+
+        // 6. Render Calendar Activities with Expiration Filters
+        let calendarData = parseCSV(activitiesRaw);
+        let calendarContainer = document.getElementById('calendar-page');
+        let calendarHtml = '';
+        let today = new Date();
+        today.setHours(0,0,0,0);
+
+        for (let i = 1; i < calendarData.length; i++) {
+          let title = calendarData[i][0];
+          let dateStr = calendarData[i][1];
+          let timeStr = calendarData[i][2];
+          let loc = calendarData[i][3] || '';
+          let coords = calendarData[i][4] || '';
+
+          if (!title || !dateStr) continue;
+
+          // Check event date validity to expire past records
+          let parts = dateStr.split('/');
+          if (parts.length === 3) {
+            let eventDate = new Date(parts[2], parts[0] - 1, parts[1]);
+            eventDate.setHours(0,0,0,0);
+            if (eventDate < today) continue; 
           }
-        });
 
-        // Small delay to enjoy the premium loading shimmer
-        setTimeout(() => {
-          renderAgenda(parsedInput, glossaryMap, hymnsMap);
-          renderContacts(parsedContacts, glossaryMap);
-          
-          // Prepend a nice subtle message that details dynamic offline preview
-          const notice = document.createElement('div');
-          notice.className = 'alert-box';
-          notice.style.marginBottom = '1rem';
-          notice.innerHTML = `⚠️ Fetch error resolved: <strong>${error.message || 'CORS restriction fallback'}</strong>. Utilizing highly robust local dataset matching relational inputs.`;
-          container.insertBefore(notice, container.firstChild);
-          
-          const contactsNotice = document.createElement('div');
-          contactsNotice.className = 'alert-box';
-          contactsNotice.style.marginBottom = '1rem';
-          contactsNotice.innerHTML = `⚠️ Fetch error resolved: <strong>${error.message || 'CORS restriction fallback'}</strong>. Utilizing highly robust local dataset matching relational inputs.`;
-          contactsContainer.insertBefore(contactsNotice, contactsContainer.firstChild);
-        }, 500);
+          let locMarkup = coords ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(coords)}" target="_blank" class="map-link">${loc} 📍</a>` : loc;
+
+          calendarHtml += `
+            <div class="card">
+              <h3 style="color:#27272a; margin-bottom:4px;">${title}</h3>
+              <p style="font-size:0.9rem; font-weight:600;">📅 ${dateStr} @ ${timeStr}</p>
+              <p style="font-size:0.9rem; margin-top:4px; color:#71717a;">📍 ${locMarkup}</p>
+            </div>`;
+        }
+        calendarContainer.innerHTML = calendarHtml || `<div class="card"><p><span lang="en">No upcoming activities scheduled.</span><span lang="ht">Pa gen aktivite planifye pou kounye a.</span></p></div>`;
+
+        // 7. Render Contacts Directory Page with Interactive Audio Elements
+        let contactsData = parseCSV(contactsRaw);
+        let contactsContainer = document.getElementById('contacts-page');
+        let contactsHtml = `<div class="card"><h3 style="margin-bottom:12px;"><span lang="en">Ward Leadership</span><span lang="ht">Chèf nan Pawas la</span></h3>`;
+
+        for (let i = 1; i < contactsData.length; i++) {
+          let calling = contactsData[i][0];
+          let name = contactsData[i][1];
+          let phone = contactsData[i][2] || '';
+
+          if (!calling || !name) continue;
+
+          let callingKreyol = glossaryMap.get(calling) || calling;
+          let phoneMarkup = phone ? `<br><a href="tel:${phone.replace(/\D/g,'')}" class="call-btn">📞 ${phone}</a>` : '';
+
+          contactsHtml += `
+            <div class="card-row" style="flex-direction:column; align-items:stretch; padding:10px 0;">
+              <div style="font-size:0.85rem; text-transform:uppercase; font-weight:bold; color:#71717a;">
+                <span lang="en">${calling}</span><span lang="ht">${callingKreyol}</span>
+              </div>
+              <div style="font-size:1.1rem; font-weight:600; color:#27272a; margin-top:2px;">
+                <span lang="en">${name}</span><span lang="ht">${translateName(name)}</span>
+              </div>
+              ${phoneMarkup}
+            </div>`;
+        }
+        contactsHtml += `</div>`;
+        contactsContainer.innerHTML = contactsHtml;
+
+      } catch (err) {
+        console.error("Initialization Failed: ", err);
+        document.getElementById('header-date').innerText = "Offline / Connection Error";
       }
     }
 
-    // ----------------------------------------------------
-    // Robust Activities CSV Sample Data (Fallback)
-    // ----------------------------------------------------
-    const sampleActivitiesCSV = `Date,Time,English Title,Kreyòl Title,Location,Address
-"June 11, 2026","7:00 PM - 8:30 PM","Stake Institute Class","Klas Enstiti Pye a","Fontainebleau Chapel","9900 W Flagler Street, Miami, FL 33174"
-"June 20, 2026","3:30 PM - 7:30 PM","Stake Day at the Miami Marlins","Jounen Pye a nan Miami Marlins","LoanDepot Park","1402 NW 7th Street, Miami, FL 33125"
-"June 25, 2026","6:30 PM - 8:00 PM","Relief Society Craft Night","Sware Atizana Sosyete Sekou a","Relief Society Room","9900 W Flagler Street, Miami, FL 33174"
-"July 4, 2026","9:00 AM - 12:00 PM","Elders Quorum Service Project","Pwojè Sèvis Korum Èldè yo","Community Food Bank","28500 SW 152nd Ave, Homestead, FL 33033"`;
-
-    /**
-     * Renders parsed activities from CSV rows into the activities list.
-     */
-    function renderActivities(rows) {
-      const container = document.getElementById('activities-cards-container');
-      container.innerHTML = '';
-      
-      // Filter out header row if present, or any row without a date
-      let dataRows = rows;
-      if (dataRows.length > 0 && dataRows[0][0] && dataRows[0][0].toLowerCase().includes('date')) {
-        dataRows = dataRows.slice(1);
-      }
-      
-      const htDays = {
-        "Sunday": "Dimanch", "Monday": "Lendi", "Tuesday": "Madi", "Wednesday": "Mèkredi",
-        "Thursday": "Jedi", "Friday": "Vandredi", "Saturday": "Samdi"
-      };
-      
-      const htMonthsArr = ["Janvye", "Fevriye", "Mas", "Avril", "Me", "Jwen", "Jiyè", "Out", "Sektanm", "Oktòb", "Novanm", "Desanm"];
-      
-      const todayStart = new Date();
-      todayStart.setHours(0, 0, 0, 0);
-      
-      const parsedEvents = [];
-      
-      dataRows.forEach(row => {
-        if (!row || row.length < 3) return; // Skip invalid rows
-        
-        const rawDate = row[0] ? row[0].trim() : '';
-        if (!rawDate) return;
-        
-        let eventDate = new Date(rawDate);
-        if (isNaN(eventDate.getTime())) {
-          return; // Skip if date is totally unparseable
-        }
-        
-        // Filter out past events
-        if (eventDate.getTime() < todayStart.getTime()) {
-          return;
-        }
-        
-        parsedEvents.push({
-          date: eventDate,
-          time: row[1] ? row[1].trim() : '',
-          titleEn: row[2] ? row[2].trim() : '',
-          titleHt: (row[3] && row[3].trim()) ? row[3].trim() : (row[2] ? row[2].trim() : ''),
-          locationName: row[4] ? row[4].trim() : '',
-          address: row[5] ? row[5].trim() : ''
-        });
-      });
-      
-      if (parsedEvents.length === 0) {
-        container.innerHTML = '<div class="alert-box">No upcoming activities found.</div>';
-        return;
-      }
-      
-      // Sort chronologically
-      parsedEvents.sort((a, b) => a.date.getTime() - b.date.getTime());
-      
-      // Limit to 15
-      const limitedEvents = parsedEvents.slice(0, 15);
-      
-      limitedEvents.forEach(event => {
-        // English Formatting
-        const optionsDateEn = { weekday: 'long', month: 'long', day: 'numeric' };
-        const dateEn = new Intl.DateTimeFormat('en-US', optionsDateEn).format(event.date);
-        const displayEn = event.time ? `${dateEn} at ${event.time}` : dateEn;
-        
-        // Haitian Creole Formatting
-        const dayOfWeekEn = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(event.date);
-        const dayOfWeekHt = htDays[dayOfWeekEn] || dayOfWeekEn;
-        const monthHt = htMonthsArr[event.date.getMonth()];
-        const dayNum = event.date.getDate();
-        const dateHt = `${dayOfWeekHt}, ${dayNum} ${monthHt}`;
-        const displayHt = event.time ? `${dateHt} a ${event.time}` : dateHt;
-        
-        const cardDiv = document.createElement('div');
-        cardDiv.className = 'agenda-item';
-        
-        const timeEl = document.createElement('div');
-        timeEl.className = 'agenda-role';
-        timeEl.innerHTML = `
-          <span class="lang-en">${displayEn}</span>
-          <span class="lang-ht">${displayHt}</span>
-        `;
-        
-        const titleEl = document.createElement('div');
-        titleEl.className = 'agenda-person';
-        titleEl.innerHTML = `
-          <span class="lang-en">${event.titleEn}</span>
-          <span class="lang-ht">${event.titleHt}</span>
-        `;
-        
-        cardDiv.appendChild(timeEl);
-        cardDiv.appendChild(titleEl);
-        
-        // Render the Location Name in bold, muted color
-        if (event.locationName) {
-          const locEl = document.createElement('div');
-          locEl.className = 'activity-location';
-          locEl.setAttribute('style', 'font-size: 0.85rem; color: var(--secondary-color); margin-top: 6px; font-weight: 700;');
-          locEl.innerHTML = `
-            <span>📍 ${event.locationName}</span>
-          `;
-          cardDiv.appendChild(locEl);
-        }
-        
-        // Render Address if exists
-        if (event.address) {
-          const addressEl = document.createElement('div');
-          addressEl.className = 'activity-address';
-          addressEl.setAttribute('style', 'margin-top: 4px; font-size: 0.85rem;');
-          
-          const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(event.address)}`;
-          
-          addressEl.innerHTML = `
-            <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" style="color: var(--primary-color); text-decoration: underline; font-weight: 500; display: inline-flex; align-items: center; gap: 4px;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
-              <span>${event.address}</span>
-            </a>
-          `;
-          cardDiv.appendChild(addressEl);
-        }
-        
-        container.appendChild(cardDiv);
-      });
-    }
-
-    // ----------------------------------------------------
-    // Robust Contacts CSV Sample Data (Fallback)
-    // ----------------------------------------------------
-    const sampleContactsCSV = `English Calling,Name,Phone
-Bishop,Jon Lieber,(954) 805-9001
-1st Counselor,Jonathan Plummer,(954) 588-9918
-2nd Counselor,Seraphin Chery,(786) 745-2533
-EQ President,Hans Peterson,(910) 987-9981
-1st Counselor,Craig Sowby,(540) 758-3000
-2nd Counselor,Jeffrey Andelin,(786) 760-9064
-RS President,Monika Sattley,
-1st Counselor,Gilma Lieber,
-2nd Counselor,Deborah Short,
-YW President,Kiara Gaona,
-1st Counselor,Bridget Short,
-2nd Counselor,Katerina Lewis,
-Primary President,Marlie Jones,
-1st Counselor,Tessy Andelin,
-2nd Counselor,Julia Smith,
-Ward Mission Leader,Victor Santos III,
-English Missionaries,,(786) 538-4839
-Creole Missionaries,,(786) 353-8402`;
-
-    /**
-     * Renders parsed contacts from CSV rows into the contacts directory.
-     */
-    function renderContacts(rows, glossaryMap) {
-      const container = document.getElementById('contacts-cards-container');
-      container.innerHTML = '';
-      
-      let dataRows = rows;
-      if (dataRows.length > 0 && dataRows[0][0] && (dataRows[0][0].toLowerCase().includes('calling') || dataRows[0][0].toLowerCase().includes('role') || dataRows[0][0].toLowerCase().includes('english'))) {
-        dataRows = dataRows.slice(1);
-      }
-      
-      let contactCount = 0;
-      dataRows.forEach(row => {
-        if (!row || row.length < 2) return;
-        const roleEn = row[0] ? row[0].trim() : '';
-        const name = row[1] ? row[1].trim() : '';
-        const phone = row[2] ? row[2].trim() : '';
-        
-        if (!roleEn && !name) return; // Skip blank rows
-        
-        let roleHt = glossaryMap[roleEn] || glossaryMap[roleEn.toLowerCase()] || roleEn;
-        
-        const cardDiv = document.createElement('div');
-        cardDiv.className = 'agenda-item';
-        
-        const roleEl = document.createElement('div');
-        roleEl.className = 'agenda-role';
-        roleEl.innerHTML = `
-          <span class="lang-en">${roleEn}</span>
-          <span class="lang-ht">${roleHt}</span>
-        `;
-        cardDiv.appendChild(roleEl);
-        
-        const nameEl = document.createElement('div');
-        nameEl.className = 'agenda-person';
-        nameEl.style.fontSize = '1.25rem';
-        nameEl.style.fontWeight = '700';
-        nameEl.style.marginTop = '4px';
-        nameEl.style.color = 'var(--text-dark)';
-        
-        const translatedNameHt = name ? translateName(name) : '—';
-        nameEl.innerHTML = `
-          <span class="lang-en">${name || '—'}</span>
-          <span class="lang-ht">${translatedNameHt}</span>
-        `;
-        cardDiv.appendChild(nameEl);
-        
-        if (phone && phone.trim() !== '') {
-          const cleanPhone = phone.replace(/[^0-9+]/g, '');
-          
-          const phoneEl = document.createElement('div');
-          phoneEl.style.marginTop = '10px';
-          phoneEl.innerHTML = `
-            <a href="tel:${cleanPhone}" style="display: inline-flex; align-items: center; gap: 8px; background-color: var(--primary-color); color: #ffffff; padding: 10px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; text-decoration: none; box-shadow: 0 2px 4px rgba(39, 39, 42, 0.2); transition: background-color 0.2s ease;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              <span>${phone}</span>
-            </a>
-          `;
-          cardDiv.appendChild(phoneEl);
-        }
-        
-        container.appendChild(cardDiv);
-        contactCount++;
-      });
-      
-      if (contactCount === 0) {
-        container.innerHTML = '<div class="alert-box">No contacts found.</div>';
-      }
-    }
-
-    /**
-     * Fetches and parses the live ward activities CSV. Falls back to sample database.
-     */
-    async function loadActivities() {
-      const container = document.getElementById('activities-cards-container');
-      try {
-        console.log('Fetching live ward activities CSV...');
-        const response = await fetch(activitiesUrl);
-        if (!response.ok) {
-          throw new Error(`Sheets response error: status ${response.status}`);
-        }
-        
-        const csvText = await response.text();
-        if (!csvText) {
-          throw new Error('Sheets response returned empty text');
-        }
-        
-        const rows = parseCSV(csvText);
-        renderActivities(rows);
-        
-      } catch (error) {
-        console.warn('Unable to get live activities feed, using fallback activities database.', error);
-        
-        const rows = parseCSV(sampleActivitiesCSV);
-        
-        setTimeout(() => {
-          renderActivities(rows);
-          
-          const notice = document.createElement('div');
-          notice.className = 'alert-box';
-          notice.style.marginBottom = '1rem';
-          notice.innerHTML = `⚠️ Calendar sync error: <strong>${error.message || 'CORS restriction fallback'}</strong>. Utilizing highly robust local dataset.`;
-          container.insertBefore(notice, container.firstChild);
-        }, 500);
-      }
-    }
-
-    // Initialize and run on window load
-    function initApp() {
-      loadAgenda();
-      loadActivities();
-    }
+    // Launch Core Execution Engine
     window.addEventListener('DOMContentLoaded', initApp);
   </script>
 </body>
