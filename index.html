@@ -221,6 +221,26 @@
       color: #71717a; 
     }
 
+    .hymn-link {
+      display: block;
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border-left: 4px solid #0284c7;
+      padding: 6px 12px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 500;
+      margin-top: 4px;
+      transition: background-color 0.2s ease, text-decoration 0.2s ease;
+    }
+    
+    .hymn-link:hover,
+    .hymn-link:active {
+      background-color: #bae6fd;
+      text-decoration: underline;
+      color: #0369a1;
+    }
+
     /* ----------------------------------------------------
        Premium Bottom Navigation Bar
        ---------------------------------------------------- */
@@ -456,6 +476,11 @@
     const glossaryUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=0&single=true&output=csv';
     const activitiesUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=645367649&single=true&output=csv';
     const contactsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=1342129738&single=true&output=csv';
+    const hymnDbUrl = 'YOUR_HYMN_DATABASE_CSV_URL_HERE';
+
+    // Global Maps for Hymn Links
+    const engHymnLinks = new Map();
+    const fraHymnLinks = new Map();
 
     // ----------------------------------------------------
     // Robust Bilingual Default Sample Data Fallbacks
@@ -790,8 +815,18 @@ Creole Missionaries,Misyonè Kreyòl yo`;
 
           const hymn = lookupHymn(valTrimmed);
           if (hymn) {
-            enText = `${valTrimmed}. ${hymn.enTitle}`;
-            htText = `${hymn.frNum || valTrimmed}. ${hymn.frTitle || hymn.enTitle}`;
+            let enTitleText = `${valTrimmed}. ${hymn.enTitle}`;
+            let htTitleText = `${hymn.frNum || valTrimmed}. ${hymn.frTitle || hymn.enTitle}`;
+
+            // Parse the English hymn number out of the string (the text before the period)
+            const parsedEnNum = enTitleText.split('.')[0].trim();
+            const engUrl = engHymnLinks.get(parsedEnNum);
+            enText = engUrl ? `<a href="${engUrl}" target="_blank" class="hymn-link">${enTitleText}</a>` : enTitleText;
+
+            // Parse the French hymn number out of the string (the text before the period)
+            const parsedFrNum = htTitleText.split('.')[0].trim();
+            const fraUrl = fraHymnLinks.get(parsedFrNum);
+            htText = fraUrl ? `<a href="${fraUrl}" target="_blank" class="hymn-link">${htTitleText}</a>` : htTitleText;
           } else {
             enText = valTrimmed;
             htText = valTrimmed;
@@ -864,22 +899,24 @@ Creole Missionaries,Misyonè Kreyòl yo`;
       try {
         console.log('Fetching church sheets concurrently...');
         
-        const [inputRes, hymnsRes, glossaryRes, contactsRes] = await Promise.all([
+        const [inputRes, hymnsRes, glossaryRes, contactsRes, hymnDbRes] = await Promise.all([
           fetch(inputUrl),
           fetch(hymnsUrl),
           fetch(glossaryUrl),
-          fetch(contactsUrl)
+          fetch(contactsUrl),
+          fetch(hymnDbUrl).catch(() => new Response(''))
         ]);
 
         if (!inputRes.ok || !hymnsRes.ok || !glossaryRes.ok || !contactsRes.ok) {
           throw new Error('One or more spreadsheet feeds returned response errors');
         }
 
-        const [inputText, hymnsText, glossaryText, contactsText] = await Promise.all([
+        const [inputText, hymnsText, glossaryText, contactsText, hymnDbText] = await Promise.all([
           inputRes.text(),
           hymnsRes.text(),
           glossaryRes.text(),
-          contactsRes.text()
+          contactsRes.text(),
+          hymnDbRes ? hymnDbRes.text() : Promise.resolve('')
         ]);
 
         // Parsing
@@ -887,6 +924,27 @@ Creole Missionaries,Misyonè Kreyòl yo`;
         const parsedGlossary = parseCSV(glossaryText);
         const parsedHymns = parseCSV(hymnsText);
         const parsedContacts = parseCSV(contactsText);
+        const parsedHymnDb = parseCSV(hymnDbText);
+
+        // Populate Hymn Links Maps
+        engHymnLinks.clear();
+        fraHymnLinks.clear();
+        for (let i = 1; i < parsedHymnDb.length; i++) {
+          const row = parsedHymnDb[i];
+          if (!row) continue;
+          
+          const enNum = row[0] ? row[0].trim() : '';
+          const enUrl = row[2] ? row[2].trim() : '';
+          const frNum = row[3] ? row[3].trim() : '';
+          const frUrl = row[5] ? row[5].trim() : '';
+
+          if (enNum && enUrl) {
+            engHymnLinks.set(enNum, enUrl);
+          }
+          if (frNum && frUrl) {
+            fraHymnLinks.set(frNum, frUrl);
+          }
+        }
 
         // Building glossary map
         const glossaryMap = {};
