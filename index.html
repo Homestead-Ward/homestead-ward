@@ -764,6 +764,66 @@ Creole Missionaries,Misyonè Kreyòl yo`;
         const valTrimmed = (val || '').trim();
 
         const roleLower = roleTrimmed.toLowerCase();
+        
+        if (roleLower.includes('musical number')) {
+          if (valTrimmed === '') return;
+          
+          const lastDashIdx = valTrimmed.lastIndexOf(' - ');
+          let songTitle = valTrimmed;
+          let performers = '';
+          
+          if (lastDashIdx !== -1) {
+            songTitle = valTrimmed.substring(0, lastDashIdx);
+            performers = valTrimmed.substring(lastDashIdx + 3);
+          }
+          
+          const roleHt = glossaryMap[roleTrimmed] || glossaryMap[roleTrimmed.toLowerCase()] || roleTrimmed;
+
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'agenda-item';
+          
+          const roleEl = document.createElement('div');
+          roleEl.className = 'agenda-role';
+          roleEl.innerHTML = `
+            <span class="lang-en">${roleTrimmed}</span>
+            <span class="lang-ht">${roleHt}</span>
+          `;
+          
+          const personEl = document.createElement('div');
+          personEl.className = 'agenda-person';
+          
+          const titleDiv = document.createElement('div');
+          titleDiv.style.fontWeight = 'bold';
+          titleDiv.style.color = '#27272a';
+          titleDiv.style.fontStyle = 'italic';
+          titleDiv.innerHTML = `
+            <span class="lang-en">${songTitle}</span>
+            <span class="lang-ht">${songTitle}</span>
+          `;
+          personEl.appendChild(titleDiv);
+          
+          if (performers) {
+            const perfDiv = document.createElement('div');
+            perfDiv.style.width = '100%';
+            perfDiv.style.textAlign = 'right';
+            perfDiv.style.fontSize = '0.85rem';
+            perfDiv.style.color = '#71717a';
+            perfDiv.style.fontWeight = '600';
+            perfDiv.style.marginTop = '2px';
+            perfDiv.innerHTML = `
+              <span class="lang-en">${performers}</span>
+              <span class="lang-ht">${translateName(performers)}</span>
+            `;
+            personEl.appendChild(perfDiv);
+          }
+          
+          itemDiv.appendChild(roleEl);
+          itemDiv.appendChild(personEl);
+          container.appendChild(itemDiv);
+          renderCount++;
+          return;
+        }
+
         const isSpeakerOrInterHymn = roleLower.includes('speaker') || roleLower.includes('intermediate hymn');
 
         // Skip "Business", "Ward Business", or "Stake Business" if value is completely blank
