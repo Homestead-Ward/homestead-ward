@@ -534,7 +534,13 @@ Elder,Èldè
 Mother's Day,Fèt Manman
 Father's Day,Fèt Papa
 Mothers,Manman yo
-Fathers,Papa yo`;
+Fathers,Papa yo
+Primary Children,Timoun Primè yo
+Ward Choir,Koral Pawas la
+Stake Choir,Koral Pye a
+Stake Youth Choir,Koral Jèn Pye a
+Family,Fanmi
+Sister Missionaries,Sè Misyonè yo`;
 
     const sampleHymnsCSV = `EN Num,EN Title,FR Num,FR Title
 58,Come\\, Ye Children of the Lord,58,Vini\\, nou Menm Pitit Senyè a (No. 58)
@@ -545,7 +551,7 @@ Fathers,Papa yo`;
     // Global reference to the loaded glossary map for bilingual translation
     let latestGlossaryMap = {};
 
-    /**
+   /**
      * Translates English honorifics within a name/value string to Kreyòl equivalents using the glossary map.
      */
     function translateName(valueString) {
@@ -553,7 +559,7 @@ Fathers,Papa yo`;
       let translated = valueString;
       const gMap = latestGlossaryMap || {};
 
-      // Check for standalone "By Invitation" (case-insensitive)
+      // 1. Check for standalone "By Invitation" (case-insensitive)
       const byInvRegex = /\bby\s+invitation\b/gi;
       translated = translated.replace(byInvRegex, (match) => {
         const lookup = gMap[match.toLowerCase()];
@@ -561,7 +567,12 @@ Fathers,Papa yo`;
         return "Sou Envitasyon"; // Robust fallback
       });
 
-      // Explicitly check and replace: "Brother", "Sister", "President", "Bishop", "Elder"
+      // 2. NEW: Dynamically handle "The [Name] Family" or "[Name] Family"
+      // This looks for "The " (optional), captures the last name, and the word "Family"
+      const familyRegex = /\b(?:The\s+)?([a-zA-Z\-']+)\s+Family\b/gi;
+      translated = translated.replace(familyRegex, 'Fanmi $1');
+
+      // 3. Explicitly check and replace: "Brother", "Sister", "President", "Bishop", "Elder"
       const titles = ["Brother", "Sister", "President", "Bishop", "Elder"];
       titles.forEach(title => {
         const regex = new RegExp('\\b' + title + '\\b', 'gi');
@@ -580,7 +591,7 @@ Fathers,Papa yo`;
         });
       });
 
-      // Replace standalone " & " with " ak "
+      // 4. Replace standalone " & " with " ak "
       translated = translated.replace(/\s+&\s+/g, ' ak ');
       // Replace standalone " and " with " ak "
       translated = translated.replace(/\band\b/gi, 'ak');
