@@ -12,12 +12,12 @@
   <style>
     /* Reset & CSS Custom Properties */
     :root {
-      --bg-color: #eaeaeb; /* A soft, neutral mid-light gray */
-      --card-bg: #f4f4f5; /* A slightly lighter frosted gray for the cards */
-      --primary-color: #27272a; /* Elegant deep zinc accent */
-      --secondary-color: #71717a; /* Soft zinc/charcoal style for muted text */
-      --text-dark: #3f3f46; /* A soft zinc/charcoal text */
-      --border-color: rgba(63, 63, 70, 0.15); /* Sleek container border */
+      --bg-color: #eaeaeb;
+      --card-bg: #f4f4f5;
+      --primary-color: #27272a;
+      --secondary-color: #71717a;
+      --text-dark: #3f3f46;
+      --border-color: rgba(63, 63, 70, 0.15);
       --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
@@ -29,8 +29,8 @@
 
     body {
       font-family: var(--font-family);
-      background-color: #eaeaeb; /* A soft, neutral mid-light gray */
-      color: #3f3f46; /* A soft zinc/charcoal text */
+      background-color: #eaeaeb;
+      color: #3f3f46;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
       display: flex;
@@ -66,7 +66,7 @@
     /* Container for Desktop Viewport Control */
     .app-container {
       width: 100%;
-      max-width: 480px; /* Perfect smartphone viewport limits */
+      max-width: 480px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -113,8 +113,8 @@
 
     .segmented-control {
       display: flex;
-      background-color: #eaeaeb; /* Neutral mid-light gray background */
-      border-radius: 9999px; /* Fully pill-shaped */
+      background-color: #eaeaeb;
+      border-radius: 9999px;
       padding: 3px;
       width: 100%;
       border: 1px solid var(--border-color);
@@ -126,7 +126,7 @@
       font-size: 0.85rem;
       font-weight: 600;
       border: none;
-      border-radius: 9999px; /* Inner capsule element alignment */
+      border-radius: 9999px;
       background-color: transparent;
       color: var(--secondary-color);
       cursor: pointer;
@@ -147,7 +147,7 @@
     main {
       flex: 1;
       padding: 1.25rem;
-      padding-bottom: 5.5rem; /* Expanded bottom padding so bottom-nav never obstructs card contents */
+      padding-bottom: 5.5rem;
       display: flex;
       flex-direction: column;
     }
@@ -162,19 +162,16 @@
       letter-spacing: -0.02em;
     }
 
-    /* Modern Card Class & Premium Cards (Agenda & Schedule items) */
+    /* Modern Card Class & Premium Cards */
     .card {
-      /* A slightly lighter frosted gray for the cards */
       background-color: #f4f4f5; 
-      /* A slightly darker shadow to give depth against the gray */
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
     }
 
     .agenda-item {
-      /* A slightly lighter frosted gray for the cards */
       background-color: #f4f4f5; 
       border: 1px solid var(--border-color);
-      border-radius: 12px; /* iOS-like smooth radius corners */
+      border-radius: 12px;
       padding: 16px;
       display: flex;
       flex-direction: column;
@@ -183,13 +180,11 @@
       transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Dynamic hover effects for rich feedback */
     .agenda-item:hover {
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    /* Column 1: Role/Topic labels or Schedule Times */
     .agenda-role {
       font-size: 0.85rem;
       font-weight: 700;
@@ -198,14 +193,12 @@
       letter-spacing: 0.05em;
     }
 
-    /* Column 2: Person, Event details, or Hymn Names */
     .agenda-person {
       font-size: 1.1rem;
       font-weight: 600;
       color: var(--text-dark);
     }
 
-    /* Empty items or warnings */
     .alert-box {
       font-size: 0.875rem;
       color: #854d0e;
@@ -216,7 +209,6 @@
       text-align: center;
     }
 
-    /* Optional: Soft zinc/charcoal style for muted text */
     .muted-text {
       color: #71717a; 
     }
@@ -237,11 +229,11 @@
       position: fixed;
       bottom: 0;
       width: 100%;
-      max-width: 480px; /* Anchor exactly to smartphone layout viewport constraints */
-      background-color: #f4f4f5; /* Match card background */
+      max-width: 480px;
+      background-color: #f4f4f5;
       border-top: 1px solid var(--border-color);
       display: flex;
-      height: 4.5rem; /* iOS & Android density targets */
+      height: 4.5rem;
       box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
       z-index: 100;
     }
@@ -255,7 +247,7 @@
       align-items: center;
       justify-content: center;
       gap: 4px;
-      color: #71717a; /* Soft inactive zinc/charcoal style */
+      color: #71717a;
       cursor: pointer;
       font-weight: 600;
       font-size: 0.75rem;
@@ -302,9 +294,8 @@
     }
   </style>
 </head>
-<body class="show-en"> <!-- Premium design defaults instantly to english mode representation -->
+<body class="show-en">
 
-  <!-- App wrapper to ensure smart responsive mobile layout styling -->
   <div class="app-container">
     
     <header>
@@ -312,7 +303,6 @@
       <h2 id="agenda-date"></h2>
       
       <div class="header-controls">
-        <!-- Elegant Segmented Control Toggle Pill selection -->
         <div class="segmented-control">
           <button class="lang-btn active" id="btn-en" onclick="setLanguage('en')">English</button>
           <button class="lang-btn" id="btn-ht" onclick="setLanguage('ht')">Kreyòl</button>
@@ -325,7 +315,6 @@
       <!-- SPA Page 1: Agile Church Agenda List -->
       <div id="page-agenda" class="app-page active">
         <div id="agenda-cards-container">
-          <!-- Shimmer effect initially while loading agenda properties -->
           <div class="shimmer-container">
             <div class="shimmer-card"></div>
             <div class="shimmer-card"></div>
@@ -399,7 +388,6 @@
           <span class="lang-ht">Aktivite k ap vini yo</span>
         </h2>
         <div id="activities-cards-container">
-          <!-- Shimmer effect initially while loading activities -->
           <div class="shimmer-container">
             <div class="shimmer-card"></div>
             <div class="shimmer-card"></div>
@@ -415,7 +403,6 @@
           <span class="lang-ht">Dirijan Pawas yo</span>
         </h2>
         <div id="contacts-cards-container">
-          <!-- Shimmer effect initially while loading contacts -->
           <div class="shimmer-container">
             <div class="shimmer-card"></div>
             <div class="shimmer-card"></div>
@@ -426,28 +413,24 @@
 
     </main>
 
-    <!-- Bottom Navigation Bar (Constructed with tap-friendly targets of 4.5rem/72px height, spaced evenly) -->
+    <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav">
       <button class="nav-tab active" id="tab-agenda" onclick="showPage('page-agenda', 'tab-agenda')">
-        <!-- SVG calendar/list icon styling -->
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
         <span class="lang-en">Agenda</span>
         <span class="lang-ht">Pwogram</span>
       </button>
       <button class="nav-tab" id="tab-schedule" onclick="showPage('page-schedule', 'tab-schedule')">
-        <!-- SVG clock/calendar icon styling for schedule -->
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         <span class="lang-en">Schedule</span>
         <span class="lang-ht">Orè</span>
       </button>
       <button class="nav-tab" id="tab-activities" onclick="showPage('page-activities', 'tab-activities')">
-        <!-- SVG bell/activity icon styling -->
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
         <span class="lang-en">Activities</span>
         <span class="lang-ht">Aktivite</span>
       </button>
       <button class="nav-tab" id="tab-contacts" onclick="showPage('page-contacts', 'tab-contacts')">
-        <!-- SVG contacts book overlay -->
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         <span class="lang-en">Contacts</span>
         <span class="lang-ht">Kontak</span>
@@ -458,9 +441,23 @@
 
   <script>
     // ----------------------------------------------------
+    // Safe Local Storage Wrapper
+    // Prevents app crashes in strict mobile privacy environments
+    // ----------------------------------------------------
+    const safeStorage = {
+      get: function(key) {
+        try { return window.localStorage.getItem(key); }
+        catch (e) { return null; }
+      },
+      set: function(key, val) {
+        try { window.localStorage.setItem(key, val); }
+        catch (e) { /* Ignore strict mode errors silently */ }
+      }
+    };
+
+    // ----------------------------------------------------
     // Requirements Constant Definition
     // ----------------------------------------------------
-    // Create a unique timestamp to force Google Sheets to bypass its cache
     const cacheBuster = '&t=' + new Date().getTime();
 
     const inputUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=985081503&single=true&output=csv' + cacheBuster;
@@ -476,8 +473,6 @@
 
     // ----------------------------------------------------
     // Robust Bilingual Default Sample Data Fallbacks
-    // These parse and render offline configurations immediately
-    // if the Google Sheets API is rate-limited or fails.
     // ----------------------------------------------------
     const sampleInputCSV = `Date:,June 7, 2026 / 7 Jwen 2026
 Presiding,President William Davis
@@ -551,31 +546,23 @@ Sister Missionaries,Sè Misyonè yo`;
 136,I Know That My Redeemer Lives,136,Mwen Konnen Ransatè m nan Viv (No. 136)
 166,Abide with Me!,166,Rete avè m! (No. 166)`;
 
-    // Global reference to the loaded glossary map for bilingual translation
     let latestGlossaryMap = {};
 
-    /**
-     * Translates English honorifics within a name/value string to Kreyòl equivalents using the glossary map.
-     */
     function translateName(valueString) {
       if (!valueString) return '';
       let translated = valueString;
       const gMap = latestGlossaryMap || {};
 
-      // 1. Check for standalone "By Invitation" (case-insensitive)
       const byInvRegex = /\bby\s+invitation\b/gi;
       translated = translated.replace(byInvRegex, (match) => {
         const lookup = gMap[match.toLowerCase()];
         if (lookup) return lookup;
-        return "Sou Envitasyon"; // Robust fallback
+        return "Sou Envitasyon";
       });
 
-      // 2. NEW: Dynamically handle "The [Name] Family" or "[Name] Family"
-      // This looks for "The " (optional), captures the last name, and the word "Family"
       const familyRegex = /\b(?:The\s+)?([a-zA-Z\-']+)\s+Family\b/gi;
       translated = translated.replace(familyRegex, 'Fanmi $1');
 
-      // 3. Explicitly check and replace: "Brother", "Sister", "President", "Bishop", "Elder"
       const titles = ["Brother", "Sister", "President", "Bishop", "Elder"];
       titles.forEach(title => {
         const regex = new RegExp('\\b' + title + '\\b', 'gi');
@@ -583,7 +570,6 @@ Sister Missionaries,Sè Misyonè yo`;
           const lookup = gMap[match] || gMap[match.toLowerCase()];
           if (lookup) return lookup;
           
-          // Safe robust hardcoded fallbacks
           const lower = match.toLowerCase();
           if (lower === 'brother') return 'Frè';
           if (lower === 'sister') return 'Sè';
@@ -594,23 +580,14 @@ Sister Missionaries,Sè Misyonè yo`;
         });
       });
 
-      // 4. Replace standalone " & " with " ak "
       translated = translated.replace(/\s+&\s+/g, ' ak ');
-      // Replace standalone " and " with " ak "
       translated = translated.replace(/\band\b/gi, 'ak');
 
       return translated;
     }
 
-    /**
-     * Splits values by the " / " delimiter.
-     * If the delimiter is present, it returns an object with english (en) and kreyol (ht) parts.
-     * Otherwise it duplicates the value for both codes.
-     */
     function splitLanguages(rawText) {
-      if (!rawText) {
-        return { en: '', ht: '' };
-      }
+      if (!rawText) return { en: '', ht: '' };
       if (rawText.includes(' / ')) {
         const parts = rawText.split(' / ');
         return {
@@ -625,9 +602,6 @@ Sister Missionaries,Sè Misyonè yo`;
       };
     }
 
-    /**
-     * Parsing of CSV text into rows, supporting values surrounded inside quotes.
-     */
     function parseCSV(text) {
       if (!text) return [];
       
@@ -636,7 +610,7 @@ Sister Missionaries,Sè Misyonè yo`;
 
       for (let i = 0; i < rawRows.length; i++) {
         const rowText = rawRows[i].trim();
-        if (!rowText) continue; // Skip completely empty rows
+        if (!rowText) continue;
         
         const cols = [];
         let insideQuote = false;
@@ -655,7 +629,6 @@ Sister Missionaries,Sè Misyonè yo`;
         }
         cols.push(entry);
         
-        // Clean columns, remove surrounding quotes and escaped comments
         const cleanedCols = cols.map(val => {
           let trimmed = val.trim();
           if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
@@ -672,9 +645,6 @@ Sister Missionaries,Sè Misyonè yo`;
       return parsedRows;
     }
 
-    /**
-     * Switch language toggles between 'en' and 'ht' values
-     */
     function setLanguage(lang) {
       const body = document.body;
       const btnEn = document.getElementById('btn-en');
@@ -692,23 +662,17 @@ Sister Missionaries,Sè Misyonè yo`;
         btnEn.classList.remove('active');
       }
       
-      // NEW: Save the user's language choice to their device
-      localStorage.setItem('pref_language', lang);
+      // Utilize safe storage
+      safeStorage.set('pref_language', lang);
     }
 
-    /**
-     * SPA Toggles between active pages and highlights navigation tabs
-     */
     function showPage(pageId, tabId) {
-      // Deactivate all pages
       const pages = document.querySelectorAll('.app-page');
       pages.forEach(p => p.classList.remove('active'));
 
-      // Deactivate all tabs
       const tabs = document.querySelectorAll('.nav-tab');
       tabs.forEach(t => t.classList.remove('active'));
 
-      // Activate chosen page & tab
       const selectedPage = document.getElementById(pageId);
       if (selectedPage) {
         selectedPage.classList.add('active');
@@ -719,22 +683,17 @@ Sister Missionaries,Sè Misyonè yo`;
         selectedTab.classList.add('active');
       }
 
-      // NEW: Save the user's current tab to their device
-      localStorage.setItem('pref_page', pageId);
-      localStorage.setItem('pref_tab', tabId);
+      // Utilize safe storage
+      safeStorage.set('pref_page', pageId);
+      safeStorage.set('pref_tab', tabId);
 
-      // Smooth bounce scroll to top of device screen
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
-    /**
-     * Renders parsed Input rows using Glossary and Hymn information map.
-     */
     function renderAgenda(inputRows, glossaryMap, hymnsMap) {
       const agendaDateEl = document.getElementById('agenda-date');
       const container = document.getElementById('agenda-cards-container');
 
-      // Clear loading elements (such as shimmer spinner)
       container.innerHTML = '';
 
       if (!inputRows || inputRows.length === 0) {
@@ -742,7 +701,6 @@ Sister Missionaries,Sè Misyonè yo`;
         return;
       }
 
-      // Extract the date from the very first row
       const firstRow = inputRows[0];
       let rawDateText = '';
       if (firstRow) {
@@ -758,26 +716,20 @@ Sister Missionaries,Sè Misyonè yo`;
         }
       }
 
-      // Robust Date Parsing: trim excess whitespace
       rawDateText = rawDateText.trim();
-
-      // Handle legacy bilingual mock strings "June 7, 2026 / 7 Jwen 2026"
       let cleanDateText = rawDateText;
       if (cleanDateText.includes(' / ')) {
         cleanDateText = cleanDateText.split(' / ')[0].trim();
       }
 
-      // Create a standard JavaScript Date object
       let parsedDate = new Date(cleanDateText);
       if (isNaN(parsedDate.getTime())) {
-        parsedDate = new Date(); // Safe fallback to current date if parsing fails
+        parsedDate = new Date();
       }
 
-      // UI Formatting (Header) using Intl.DateTimeFormat for English as "Month Day, Year"
       const optionsEn = { year: 'numeric', month: 'long', day: 'numeric' };
       const formattedDateEn = new Intl.DateTimeFormat('en-US', optionsEn).format(parsedDate);
 
-      // Format elegant Haitian Creole equivalent bilingually
       const htMonths = ["Janvye", "Fevriye", "Mas", "Avril", "Me", "Jwen", "Jiyè", "Out", "Sektanm", "Oktòb", "Novanm", "Desanm"];
       const day = parsedDate.getDate();
       const monthIndex = parsedDate.getMonth();
@@ -789,20 +741,15 @@ Sister Missionaries,Sè Misyonè yo`;
         <span class="lang-ht">${formattedDateHt}</span>
       `;
 
-      // Fast Sunday Logic Verification: strictly use .getDate()
       const isFirstSunday = parsedDate.getDate() <= 7;
-
-      // Loop remaining rows starting from row 1 (index 1)
       const remainingRows = inputRows.slice(1);
       let renderCount = 0;
 
       remainingRows.forEach(([role, val]) => {
-        // Skip valid but completely empty pairs
         if (!role || !role.trim()) return;
 
         const roleTrimmed = role.trim();
         const valTrimmed = (val || '').trim();
-
         const roleLower = roleTrimmed.toLowerCase();
         
         if (roleLower.includes('musical number')) {
@@ -818,8 +765,6 @@ Sister Missionaries,Sè Misyonè yo`;
           }
           
           const roleHt = glossaryMap[roleTrimmed] || glossaryMap[roleTrimmed.toLowerCase()] || roleTrimmed;
-          
-          // Cross-reference the song title with the Glossary
           const translatedSongTitle = glossaryMap[songTitle] || glossaryMap[songTitle.toLowerCase()] || songTitle;
 
           const itemDiv = document.createElement('div');
@@ -846,9 +791,7 @@ Sister Missionaries,Sè Misyonè yo`;
           personEl.appendChild(titleDiv);
           
           if (performers) {
-            // Cross-reference performers with the Glossary, then fallback to name translation
             const translatedPerf = glossaryMap[performers] || glossaryMap[performers.toLowerCase()] || translateName(performers);
-            
             const perfDiv = document.createElement('div');
             perfDiv.style.width = '100%';
             perfDiv.style.textAlign = 'right';
@@ -872,34 +815,22 @@ Sister Missionaries,Sè Misyonè yo`;
 
         const isSpeakerOrInterHymn = roleLower.includes('speaker') || roleLower.includes('intermediate hymn');
 
-        // Skip "Business", "Ward Business", or "Stake Business" if value is completely blank
-        if (roleLower.includes('business') && !valTrimmed) {
-          return;
-        }
+        if (roleLower.includes('business') && !valTrimmed) return;
 
-        // Smart routing logic based on Fast Sunday vs Standard Sunday
         if (isFirstSunday) {
-          if (isSpeakerOrInterHymn) {
-            return; // Skip speakers and intermediate hymns on Fast Sunday
-          }
+          if (isSpeakerOrInterHymn) return;
         } else {
-          if (isSpeakerOrInterHymn && !valTrimmed) {
-            return; // Skip if a speaker or intermediate hymn is unassigned/empty in standard layout
-          }
+          if (isSpeakerOrInterHymn && !valTrimmed) return;
         }
 
-        // Get English and Haitian Creole translated label
         const roleEn = roleTrimmed;
         const roleHt = glossaryMap[roleTrimmed] || glossaryMap[roleTrimmed.toLowerCase()] || roleTrimmed;
-
-        // Check if item contains "Hymn"
         const isHymn = roleTrimmed.toLowerCase().includes('hymn');
 
         let enText = valTrimmed;
         let htText = valTrimmed;
 
         if (isHymn && valTrimmed) {
-          // Helper to find hymn inside map
           const lookupHymn = (v) => {
             if (!v) return null;
             if (hymnsMap[v]) return hymnsMap[v];
@@ -913,12 +844,10 @@ Sister Missionaries,Sè Misyonè yo`;
             let enTitleText = `${valTrimmed}. ${hymn.enTitle}`;
             let htTitleText = `${hymn.frNum || valTrimmed}. ${hymn.frTitle || hymn.enTitle}`;
 
-            // Parse the English hymn number out of the string (the text before the period)
             const parsedEnNum = enTitleText.split('.')[0].trim();
             const engUrl = engHymnLinks.get(parsedEnNum);
             enText = engUrl ? `<a href="${engUrl}" target="_blank" class="hymn-btn-link">🎵 ${enTitleText}</a>` : enTitleText;
 
-            // Parse the French hymn number out of the string (the text before the period)
             const parsedFrNum = htTitleText.split('.')[0].trim();
             const fraUrl = fraHymnLinks.get(parsedFrNum);
             htText = fraUrl ? `<a href="${fraUrl}" target="_blank" class="hymn-btn-link">🎵 ${htTitleText}</a>` : htTitleText;
@@ -930,11 +859,9 @@ Sister Missionaries,Sè Misyonè yo`;
           htText = translateName(valTrimmed);
         }
 
-        // Create the agenda-item div
         const itemDiv = document.createElement('div');
         itemDiv.className = 'agenda-item';
 
-        // Column 1 element: Role Label
         const roleEl = document.createElement('div');
         roleEl.className = 'agenda-role';
         roleEl.innerHTML = `
@@ -942,7 +869,6 @@ Sister Missionaries,Sè Misyonè yo`;
           <span class="lang-ht">${roleHt}</span>
         `;
 
-        // Column 2 element: Value/Person/Hymn
         const personEl = document.createElement('div');
         personEl.className = 'agenda-person';
         personEl.innerHTML = `
@@ -950,15 +876,11 @@ Sister Missionaries,Sè Misyonè yo`;
           <span class="lang-ht">${htText || '—'}</span>
         `;
 
-        // Append components vertically to card
         itemDiv.appendChild(roleEl);
         itemDiv.appendChild(personEl);
-
-        // Put card into content stream
         container.appendChild(itemDiv);
         renderCount++;
 
-        // Fast Sunday Testimonies card injection immediately following the Sacrament administration row
         const isSacramentRow = roleTrimmed.toLowerCase().includes('sacrament') && !roleTrimmed.toLowerCase().includes('hymn');
         if (isFirstSunday && isSacramentRow) {
           const testDiv = document.createElement('div');
@@ -984,9 +906,6 @@ Sister Missionaries,Sè Misyonè yo`;
       }
     }
 
-    /**
-     * Main flow: Fetch all five inputs concurrently or fallback elegantly
-     */
     async function loadAgenda() {
       const container = document.getElementById('agenda-cards-container');
       const contactsContainer = document.getElementById('contacts-cards-container');
@@ -1014,21 +933,19 @@ Sister Missionaries,Sè Misyonè yo`;
           hymnDbRes ? hymnDbRes.text() : Promise.resolve('')
         ]);
 
-        // === NEW: Save the live data to the device's Local Storage ===
-        localStorage.setItem('cached_input', inputText);
-        localStorage.setItem('cached_hymns', hymnsText);
-        localStorage.setItem('cached_glossary', glossaryText);
-        localStorage.setItem('cached_contacts', contactsText);
-        if (hymnDbText) localStorage.setItem('cached_hymnDb', hymnDbText);
+        // Utilize safe storage wrapper
+        safeStorage.set('cached_input', inputText);
+        safeStorage.set('cached_hymns', hymnsText);
+        safeStorage.set('cached_glossary', glossaryText);
+        safeStorage.set('cached_contacts', contactsText);
+        if (hymnDbText) safeStorage.set('cached_hymnDb', hymnDbText);
 
-        // Parsing
         const parsedInput = parseCSV(inputText);
         const parsedGlossary = parseCSV(glossaryText);
         const parsedHymns = parseCSV(hymnsText);
         const parsedContacts = parseCSV(contactsText);
         const parsedHymnDb = parseCSV(hymnDbText);
 
-        // Populate Hymn Links Maps
         engHymnLinks.clear();
         fraHymnLinks.clear();
         for (let i = 1; i < parsedHymnDb.length; i++) {
@@ -1048,7 +965,6 @@ Sister Missionaries,Sè Misyonè yo`;
           }
         }
 
-        // Building glossary map
         const glossaryMap = {};
         parsedGlossary.forEach(row => {
           if (row && row.length >= 2) {
@@ -1058,9 +974,8 @@ Sister Missionaries,Sè Misyonè yo`;
             glossaryMap[en.toLowerCase()] = ht;
           }
         });
-        latestGlossaryMap = glossaryMap; // Save to global variable
+        latestGlossaryMap = glossaryMap;
 
-        // Building hymns map
         const hymnsMap = {};
         parsedHymns.forEach(row => {
           if (row && row.length >= 4) {
@@ -1072,28 +987,25 @@ Sister Missionaries,Sè Misyonè yo`;
           }
         });
 
-        // Render
         renderAgenda(parsedInput, glossaryMap, hymnsMap);
         renderContacts(parsedContacts, glossaryMap);
 
       } catch (error) {
         console.warn('Network fetching failed. Attempting to use Local Storage, then falling back to hardcoded data.', error);
         
-        // === NEW: Try to get data from Local Storage, otherwise use the sample fallbacks ===
-        const fallbackInputText = localStorage.getItem('cached_input') || sampleInputCSV;
-        const fallbackGlossaryText = localStorage.getItem('cached_glossary') || sampleGlossaryCSV;
-        const fallbackHymnsText = localStorage.getItem('cached_hymns') || sampleHymnsCSV;
-        const fallbackContactsText = localStorage.getItem('cached_contacts') || sampleContactsCSV;
-        const fallbackHymnDbText = localStorage.getItem('cached_hymnDb') || '';
+        // Utilize safe storage wrapper
+        const fallbackInputText = safeStorage.get('cached_input') || sampleInputCSV;
+        const fallbackGlossaryText = safeStorage.get('cached_glossary') || sampleGlossaryCSV;
+        const fallbackHymnsText = safeStorage.get('cached_hymns') || sampleHymnsCSV;
+        const fallbackContactsText = safeStorage.get('cached_contacts') || sampleContactsCSV;
+        const fallbackHymnDbText = safeStorage.get('cached_hymnDb') || '';
 
-        // Load fallback CSV datasets
         const parsedInput = parseCSV(fallbackInputText);
         const parsedGlossary = parseCSV(fallbackGlossaryText);
         const parsedHymns = parseCSV(fallbackHymnsText);
         const parsedContacts = parseCSV(fallbackContactsText);
         const parsedHymnDb = parseCSV(fallbackHymnDbText);
 
-        // Populate Hymn Links Maps (even offline if cached!)
         engHymnLinks.clear();
         fraHymnLinks.clear();
         if (parsedHymnDb.length > 0) {
@@ -1109,7 +1021,6 @@ Sister Missionaries,Sè Misyonè yo`;
           }
         }
 
-        // Build fallback maps
         const glossaryMap = {};
         parsedGlossary.forEach(row => {
           if (row && row.length >= 2) {
@@ -1119,7 +1030,7 @@ Sister Missionaries,Sè Misyonè yo`;
             glossaryMap[en.toLowerCase()] = ht;
           }
         });
-        latestGlossaryMap = glossaryMap; // Save to global variable
+        latestGlossaryMap = glossaryMap;
 
         const hymnsMap = {};
         parsedHymns.forEach(row => {
@@ -1132,16 +1043,14 @@ Sister Missionaries,Sè Misyonè yo`;
           }
         });
 
-        // Small delay to enjoy the premium loading shimmer
         setTimeout(() => {
           renderAgenda(parsedInput, glossaryMap, hymnsMap);
           renderContacts(parsedContacts, glossaryMap);
           
-          // Prepend a nice subtle message that details dynamic offline preview
           const notice = document.createElement('div');
           notice.className = 'alert-box';
           notice.style.marginBottom = '1rem';
-          let sourceName = localStorage.getItem('cached_input') ? 'Saved device memory' : 'Local hardcoded dataset';
+          let sourceName = safeStorage.get('cached_input') ? 'Saved device memory' : 'Local hardcoded dataset';
           notice.innerHTML = `⚠️ Fetch error resolved. Utilizing: <strong>${sourceName}</strong>.`;
           container.insertBefore(notice, container.firstChild);
           
@@ -1154,23 +1063,16 @@ Sister Missionaries,Sè Misyonè yo`;
       }
     }
 
-    // ----------------------------------------------------
-    // Robust Activities CSV Sample Data (Fallback)
-    // ----------------------------------------------------
     const sampleActivitiesCSV = `Date,Time,English Title,Kreyòl Title,Location,Address,Link URL
 "June 11, 2026","7:00 PM - 8:30 PM","Stake Institute Class","Klas Enstiti Pye a","Fontainebleau Chapel","9900 W Flagler Street, Miami, FL 33174",
 "June 20, 2026","3:30 PM - 7:30 PM","Stake Day at the Miami Marlins","Jounen Pye a nan Miami Marlins","LoanDepot Park","1402 NW 7th Street, Miami, FL 33125","https://www.mlb.com/marlins/tickets"
 "June 25, 2026","6:30 PM - 8:00 PM","Relief Society Craft Night","Sware Atizana Sosyete Sekou a","Relief Society Room","9900 W Flagler Street, Miami, FL 33174",
 "July 4, 2026","9:00 AM - 12:00 PM","Elders Quorum Service Project","Pwojè Sèvis Korum Èldè yo","Community Food Bank","28500 SW 152nd Ave, Homestead, FL 33033",`;
 
-    /**
-     * Renders parsed activities from CSV rows into the activities list.
-     */
     function renderActivities(rows) {
       const container = document.getElementById('activities-cards-container');
       container.innerHTML = '';
       
-      // Filter out header row if present, or any row without a date
       let dataRows = rows;
       if (dataRows.length > 0 && dataRows[0][0] && dataRows[0][0].toLowerCase().includes('date')) {
         dataRows = dataRows.slice(1);
@@ -1189,36 +1091,32 @@ Sister Missionaries,Sè Misyonè yo`;
       const parsedEvents = [];
       
       dataRows.forEach(row => {
-        if (!row || row.length < 3) return; // Skip invalid rows
+        if (!row || row.length < 3) return;
         
         const rawDate = row[0] ? row[0].trim() : '';
         if (!rawDate) return;
         
         let eventDate;
         
-        // NEW: Check for recurring weekly events (e.g., "Every Thursday")
         const recurringMatch = rawDate.match(/Every\s+(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)/i);
         
         if (recurringMatch) {
           const daysMap = { "sunday": 0, "monday": 1, "tuesday": 2, "wednesday": 3, "thursday": 4, "friday": 5, "saturday": 6 };
           const targetDay = daysMap[recurringMatch[1].toLowerCase()];
           
-          eventDate = new Date(todayStart); // Start counting from today
+          eventDate = new Date(todayStart);
           
-          // Calculate how many days until the next target day (0 if it is today)
           const daysUntil = (targetDay - eventDate.getDay() + 7) % 7;
           eventDate.setDate(eventDate.getDate() + daysUntil);
           
         } else {
-          // If it doesn't say "Every", parse it as a normal calendar date
           eventDate = new Date(rawDate);
         }
 
         if (isNaN(eventDate.getTime())) {
-          return; // Skip if date is totally unparseable
+          return;
         }
         
-        // Filter out past events
         if (eventDate.getTime() < todayStart.getTime()) {
           return;
         }
@@ -1230,7 +1128,7 @@ Sister Missionaries,Sè Misyonè yo`;
           titleHt: (row[3] && row[3].trim()) ? row[3].trim() : (row[2] ? row[2].trim() : ''),
           locationName: row[4] ? row[4].trim() : '',
           address: row[5] ? row[5].trim() : '',
-          linkUrl: row[6] ? row[6].trim() : '' // Extract the 7th column for the URL
+          linkUrl: row[6] ? row[6].trim() : ''
         });
       });
       
@@ -1239,26 +1137,21 @@ Sister Missionaries,Sè Misyonè yo`;
         return;
       }
       
-      // Sort chronologically
       parsedEvents.sort((a, b) => a.date.getTime() - b.date.getTime());
       
-      // Limit to 15
       const limitedEvents = parsedEvents.slice(0, 15);
       
       limitedEvents.forEach(event => {
-        // English Formatting
         const optionsDateEn = { weekday: 'long', month: 'long', day: 'numeric' };
         const dateEn = new Intl.DateTimeFormat('en-US', optionsDateEn).format(event.date);
         const displayEn = event.time ? `${dateEn} at ${event.time}` : dateEn;
         
-        // Haitian Creole Formatting
         const dayOfWeekEn = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(event.date);
         const dayOfWeekHt = htDays[dayOfWeekEn] || dayOfWeekEn;
         const monthHt = htMonthsArr[event.date.getMonth()];
         const dayNum = event.date.getDate();
         const dateHt = `${dayOfWeekHt}, ${dayNum} ${monthHt}`;
         
-        // Translate specific English time keywords to Kreyòl
         let timeHt = event.time;
         if (timeHt) {
           timeHt = timeHt.replace(/ALL DAY/gi, 'TOUT JOU');
@@ -1286,7 +1179,6 @@ Sister Missionaries,Sè Misyonè yo`;
         cardDiv.appendChild(timeEl);
         cardDiv.appendChild(titleEl);
         
-        // Render the Location Name in bold, muted color
         if (event.locationName) {
           const locEl = document.createElement('div');
           locEl.className = 'activity-location';
@@ -1297,7 +1189,6 @@ Sister Missionaries,Sè Misyonè yo`;
           cardDiv.appendChild(locEl);
         }
         
-        // Render Address if exists
         if (event.address) {
           const addressEl = document.createElement('div');
           addressEl.className = 'activity-address';
@@ -1314,7 +1205,6 @@ Sister Missionaries,Sè Misyonè yo`;
           cardDiv.appendChild(addressEl);
         }
 
-        // NEW: Render External Link Button if exists
         if (event.linkUrl) {
           const linkEl = document.createElement('div');
           linkEl.className = 'activity-link';
@@ -1323,7 +1213,6 @@ Sister Missionaries,Sè Misyonè yo`;
           linkEl.innerHTML = `
             <a href="${event.linkUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; background-color: var(--primary-color); color: #ffffff; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; text-decoration: none; box-shadow: 0 2px 4px rgba(39, 39, 42, 0.2); transition: background-color 0.2s ease;">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
-              <!-- The app automatically toggles between these two spans! -->
               <span class="lang-en">More Info</span>
               <span class="lang-ht">Plis Enfòmasyon</span>
             </a>
@@ -1335,9 +1224,74 @@ Sister Missionaries,Sè Misyonè yo`;
       });
     }
 
-    /**
-     * Fetches and parses the live ward activities CSV. Falls back to sample database.
-     */
+    function renderContacts(rows, glossaryMap) {
+      const container = document.getElementById('contacts-cards-container');
+      container.innerHTML = '';
+      
+      let dataRows = rows;
+      if (dataRows.length > 0 && dataRows[0][0] && (dataRows[0][0].toLowerCase().includes('calling') || dataRows[0][0].toLowerCase().includes('role') || dataRows[0][0].toLowerCase().includes('english'))) {
+        dataRows = dataRows.slice(1);
+      }
+      
+      let contactCount = 0;
+      dataRows.forEach(row => {
+        if (!row || row.length < 2) return;
+        const roleEn = row[0] ? row[0].trim() : '';
+        const name = row[1] ? row[1].trim() : '';
+        const phone = row[2] ? row[2].trim() : '';
+        
+        if (!roleEn && !name) return;
+        
+        let roleHt = glossaryMap[roleEn] || glossaryMap[roleEn.toLowerCase()] || roleEn;
+        
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'agenda-item';
+        
+        const roleEl = document.createElement('div');
+        roleEl.className = 'agenda-role';
+        roleEl.innerHTML = `
+          <span class="lang-en">${roleEn}</span>
+          <span class="lang-ht">${roleHt}</span>
+        `;
+        cardDiv.appendChild(roleEl);
+        
+        const nameEl = document.createElement('div');
+        nameEl.className = 'agenda-person';
+        nameEl.style.fontSize = '1.25rem';
+        nameEl.style.fontWeight = '700';
+        nameEl.style.marginTop = '4px';
+        nameEl.style.color = 'var(--text-dark)';
+        
+        const translatedNameHt = name ? translateName(name) : '—';
+        nameEl.innerHTML = `
+          <span class="lang-en">${name || '—'}</span>
+          <span class="lang-ht">${translatedNameHt}</span>
+        `;
+        cardDiv.appendChild(nameEl);
+        
+        if (phone && phone.trim() !== '') {
+          const cleanPhone = phone.replace(/[^0-9+]/g, '');
+          
+          const phoneEl = document.createElement('div');
+          phoneEl.style.marginTop = '10px';
+          phoneEl.innerHTML = `
+            <a href="tel:${cleanPhone}" style="display: inline-flex; align-items: center; gap: 8px; background-color: var(--primary-color); color: #ffffff; padding: 10px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; text-decoration: none; box-shadow: 0 2px 4px rgba(39, 39, 42, 0.2); transition: background-color 0.2s ease;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <span>${phone}</span>
+            </a>
+          `;
+          cardDiv.appendChild(phoneEl);
+        }
+        
+        container.appendChild(cardDiv);
+        contactCount++;
+      });
+      
+      if (contactCount === 0) {
+        container.innerHTML = '<div class="alert-box">No contacts found.</div>';
+      }
+    }
+
     async function loadActivities() {
       const container = document.getElementById('activities-cards-container');
       try {
@@ -1352,8 +1306,8 @@ Sister Missionaries,Sè Misyonè yo`;
           throw new Error('Sheets response returned empty text');
         }
         
-        // === NEW: Save the live data to the device's Local Storage ===
-        localStorage.setItem('cached_activities', csvText);
+        // Utilize safe storage wrapper
+        safeStorage.set('cached_activities', csvText);
 
         const rows = parseCSV(csvText);
         renderActivities(rows);
@@ -1361,8 +1315,8 @@ Sister Missionaries,Sè Misyonè yo`;
       } catch (error) {
         console.warn('Network fetching failed. Attempting to use Local Storage, then falling back to hardcoded data.', error);
         
-        // === NEW: Try to get data from Local Storage, otherwise use the sample fallbacks ===
-        const fallbackActivitiesText = localStorage.getItem('cached_activities') || sampleActivitiesCSV;
+        // Utilize safe storage wrapper
+        const fallbackActivitiesText = safeStorage.get('cached_activities') || sampleActivitiesCSV;
         const rows = parseCSV(fallbackActivitiesText);
         
         setTimeout(() => {
@@ -1371,40 +1325,33 @@ Sister Missionaries,Sè Misyonè yo`;
           const notice = document.createElement('div');
           notice.className = 'alert-box';
           notice.style.marginBottom = '1rem';
-          let sourceName = localStorage.getItem('cached_activities') ? 'Saved device memory' : 'Local hardcoded dataset';
+          let sourceName = safeStorage.get('cached_activities') ? 'Saved device memory' : 'Local hardcoded dataset';
           notice.innerHTML = `⚠️ Calendar sync error resolved. Utilizing: <strong>${sourceName}</strong>.`;
           container.insertBefore(notice, container.firstChild);
         }, 500);
       }
     }
 
-    // Initialize and run on window load
     function initApp() {
-      // 1. Check for saved language, default to English if none exists
-      const savedLang = localStorage.getItem('pref_language') || 'en';
+      // Utilize safe storage wrapper
+      const savedLang = safeStorage.get('pref_language') || 'en';
       setLanguage(savedLang);
 
-      // 2. Check for saved tab, default to Agenda if none exists
-      const savedPage = localStorage.getItem('pref_page') || 'page-agenda';
-      const savedTab = localStorage.getItem('pref_tab') || 'tab-agenda';
+      // Utilize safe storage wrapper
+      const savedPage = safeStorage.get('pref_page') || 'page-agenda';
+      const savedTab = safeStorage.get('pref_tab') || 'tab-agenda';
       showPage(savedPage, savedTab);
 
-      // 3. Load the data
       loadAgenda();
       loadActivities();
     }
+    
     window.addEventListener('DOMContentLoaded', initApp);
-// ----------------------------------------------------
-    // PWA Background Refreshing (Visibility API)
-    // ----------------------------------------------------
-    // Detects when the user brings the app back to the screen
+
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
         console.log('App brought to foreground. Silently updating data...');
-        
-        // Only attempt a background refresh if the phone has an active internet connection
         if (navigator.onLine) {
-          // Add a tiny delay to ensure the network connection is fully awake
           setTimeout(() => {
             loadAgenda();
             loadActivities();
