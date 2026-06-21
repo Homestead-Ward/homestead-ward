@@ -5,14 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Homestead Ward Agenda</title>
 
-  <!-- Smartphone Home Screen App Icons -->
   <link rel="apple-touch-icon" href="app-icon.png">
   <link rel="icon" type="image/png" href="app-icon.png">
   
-  <!-- Tells the phone to make the top status bar match your app's gray color -->
   <meta name="theme-color" content="#f4f4f5">
 
-  <!-- Google Fonts for gorgeous premium typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -93,9 +90,20 @@
       padding: 1.25rem 1.5rem;
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
+      gap: 0.4rem;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
       text-align: center;
+    }
+
+    /* Styled Header Logo Graphic Frame */
+    .header-logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      margin: 0 auto 0.2rem auto;
+      display: block;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+      object-fit: cover;
     }
 
     h1 {
@@ -307,6 +315,7 @@
   <div class="app-container">
     
     <header>
+      <img src="app-icon.png" alt="Ward Logo" class="header-logo" onerror="this.style.display='none';">
       <h1 id="main-title">Homestead Ward</h1>
       <h2 id="agenda-date"></h2>
       
@@ -320,7 +329,6 @@
 
     <main>
       
-      <!-- SPA Page 1: Agile Church Agenda List -->
       <div id="page-agenda" class="app-page active">
         <div id="agenda-cards-container">
           <div class="shimmer-container">
@@ -333,14 +341,12 @@
         </div>
       </div>
 
-      <!-- SPA Page 2: Bilingual Meeting Schedule -->
       <div id="page-schedule" class="app-page">
         <h3 class="section-title" style="text-align: center; margin-bottom: 0.5rem;">
           <span class="lang-en">Meeting Schedule</span>
           <span class="lang-ht">Orè Reyinyon</span>
         </h3>
 
-        <!-- Card 1 -->
         <div class="agenda-item">
           <div class="agenda-role">
             <span class="lang-en">12:40 PM – 1:30 PM</span>
@@ -352,7 +358,6 @@
           </div>
         </div>
 
-        <!-- Card 2 -->
         <div class="agenda-item">
           <div class="agenda-role">
             <span class="lang-en">1st & 3rd Sundays</span>
@@ -364,7 +369,6 @@
           </div>
         </div>
 
-        <!-- Card 3 -->
         <div class="agenda-item">
           <div class="agenda-role">
             <span class="lang-en">2nd & 4th Sundays</span>
@@ -376,7 +380,6 @@
           </div>
         </div>
 
-        <!-- Card 4 -->
         <div class="agenda-item">
           <div class="agenda-role">
             <span class="lang-en">5th Sundays</span>
@@ -389,7 +392,6 @@
         </div>
       </div>
 
-      <!-- SPA Page 3: Live Activities Feed -->
       <div id="page-activities" class="app-page">
         <h2 class="section-title" style="text-align: center; margin-bottom: 0.5rem;">
           <span class="lang-en">Upcoming Activities</span>
@@ -404,7 +406,6 @@
         </div>
       </div>
 
-      <!-- SPA Page 4: Contacts Directory -->
       <div id="page-contacts" class="app-page">
         <h2 class="section-title" style="text-align: center; margin-bottom: 0.5rem;">
           <span class="lang-en">Ward Leadership</span>
@@ -421,7 +422,6 @@
 
     </main>
 
-    <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav">
       <button class="nav-tab active" id="tab-agenda" onclick="showPage('page-agenda', 'tab-agenda')">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
@@ -450,7 +450,6 @@
   <script>
     // ----------------------------------------------------
     // Safe Local Storage Wrapper
-    // Prevents app crashes in strict mobile privacy environments
     // ----------------------------------------------------
     const safeStorage = {
       get: function(key) {
@@ -537,22 +536,34 @@ By Invitation,Sou Envitasyon
 Brother,Frè
 Sister,Sè
 Elder,Èldè
-Mother's Day,Fèt Manman
-Father's Day,Fèt Papa
-Mothers,Manman yo
-Fathers,Papa yo
-Primary Children,Timoun Primè yo
-Ward Choir,Koral Pawas la
-Stake Choir,Koral Pye a
-Stake Youth Choir,Koral Jèn Pye a
-Family,Fanmi
-Sister Missionaries,Sè Misyonè yo`;
+Family,Fanmi`;
 
     const sampleHymnsCSV = `EN Num,EN Title,FR Num,FR Title
 58,Come\\, Ye Children of the Lord,58,Vini\\, nou Menm Pitit Senyè a (No. 58)
 191,As Now We Take the Sacrament,191,Pandan N-ap Pran Sentsèn nan (No. 191)
 136,I Know That My Redeemer Lives,136,Mwen Konnen Ransatè m nan Viv (No. 136)
 166,Abide with Me!,166,Rete avè m! (No. 166)`;
+
+    // FIXED: Corrected backup data initialization
+    const sampleContactsCSV = `English Calling,Name,Phone
+Bishop,Jon Lieber,(954) 805-9001
+1st Counselor,Jonathan Plummer,(954) 588-9918
+2nd Counselor,Seraphin Chery,(786) 745-2533
+EQ President,Hans Peterson,(910) 987-9981
+1st Counselor,Craig Sowby,(540) 758-3000
+2nd Counselor,Jeffrey Andelin,(786) 760-9064
+RS President,Monika Sattley,
+1st Counselor,Gilma Lieber,
+2nd Counselor,Deborah Short,
+YW President,Kiara Gaona,
+1st Counselor,Bridget Short,
+2nd Counselor,Katerina Lewis,
+Primary President,Marlie Jones,
+1st Counselor,Tessy Andelin,
+2nd Counselor,Julia Smith,
+Ward Mission Leader,Victor Santos III,
+English Missionaries,,(786) 538-4839
+Creole Missionaries,,(786) 353-8402`;
 
     let latestGlossaryMap = {};
 
@@ -670,7 +681,6 @@ Sister Missionaries,Sè Misyonè yo`;
         btnEn.classList.remove('active');
       }
       
-      // Utilize safe storage
       safeStorage.set('pref_language', lang);
     }
 
@@ -691,7 +701,6 @@ Sister Missionaries,Sè Misyonè yo`;
         selectedTab.classList.add('active');
       }
 
-      // Utilize safe storage
       safeStorage.set('pref_page', pageId);
       safeStorage.set('pref_tab', tabId);
 
@@ -941,7 +950,6 @@ Sister Missionaries,Sè Misyonè yo`;
           hymnDbRes ? hymnDbRes.text() : Promise.resolve('')
         ]);
 
-        // Utilize safe storage wrapper
         safeStorage.set('cached_input', inputText);
         safeStorage.set('cached_hymns', hymnsText);
         safeStorage.set('cached_glossary', glossaryText);
@@ -1001,7 +1009,6 @@ Sister Missionaries,Sè Misyonè yo`;
       } catch (error) {
         console.warn('Network fetching failed. Attempting to use Local Storage, then falling back to hardcoded data.', error);
         
-        // Utilize safe storage wrapper
         const fallbackInputText = safeStorage.get('cached_input') || sampleInputCSV;
         const fallbackGlossaryText = safeStorage.get('cached_glossary') || sampleGlossaryCSV;
         const fallbackHymnsText = safeStorage.get('cached_hymns') || sampleHymnsCSV;
@@ -1246,7 +1253,6 @@ Sister Missionaries,Sè Misyonè yo`;
           throw new Error('Sheets response returned empty text');
         }
         
-        // Utilize safe storage wrapper
         safeStorage.set('cached_activities', csvText);
 
         const rows = parseCSV(csvText);
@@ -1255,7 +1261,6 @@ Sister Missionaries,Sè Misyonè yo`;
       } catch (error) {
         console.warn('Network fetching failed. Attempting to use Local Storage, then falling back to hardcoded data.', error);
         
-        // Utilize safe storage wrapper
         const fallbackActivitiesText = safeStorage.get('cached_activities') || sampleActivitiesCSV;
         const rows = parseCSV(fallbackActivitiesText);
         
@@ -1272,12 +1277,78 @@ Sister Missionaries,Sè Misyonè yo`;
       }
     }
 
+    function renderContacts(rows, glossaryMap) {
+      const container = document.getElementById('contacts-cards-container');
+      container.innerHTML = '';
+      
+      let dataRows = rows;
+      if (dataRows.length > 0 && dataRows[0][0] && (dataRows[0][0].toLowerCase().includes('calling') || dataRows[0][0].toLowerCase().includes('role') || dataRows[0][0].toLowerCase().includes('english'))) {
+        dataRows = dataRows.slice(1);
+      }
+      
+      let contactCount = 0;
+      dataRows.forEach(row => {
+        if (!row || row.length < 2) return;
+        const roleEn = row[0] ? row[0].trim() : '';
+        const name = row[1] ? row[1].trim() : '';
+        const phone = row[2] ? row[2].trim() : '';
+        
+        if (!roleEn && !name) return;
+        
+        let roleHt = glossaryMap[roleEn] || glossaryMap[roleEn.toLowerCase()] || roleEn;
+        
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'agenda-item';
+        
+        const roleEl = document.createElement('div');
+        roleEl.className = 'agenda-role';
+        roleEl.innerHTML = `
+          <span class="lang-en">${roleEn}</span>
+          <span class="lang-ht">${roleHt}</span>
+        `;
+        cardDiv.appendChild(roleEl);
+        
+        const nameEl = document.createElement('div');
+        nameEl.className = 'agenda-person';
+        nameEl.style.fontSize = '1.25rem';
+        nameEl.style.fontWeight = '700';
+        nameEl.style.marginTop = '4px';
+        nameEl.style.color = 'var(--text-dark)';
+        
+        const translatedNameHt = name ? translateName(name) : '—';
+        nameEl.innerHTML = `
+          <span class="lang-en">${name || '—'}</span>
+          <span class="lang-ht">${translatedNameHt}</span>
+        `;
+        cardDiv.appendChild(nameEl);
+        
+        if (phone && phone.trim() !== '') {
+          const cleanPhone = phone.replace(/[^0-9+]/g, '');
+          
+          const phoneEl = document.createElement('div');
+          phoneEl.style.marginTop = '10px';
+          phoneEl.innerHTML = `
+            <a href="tel:${cleanPhone}" style="display: inline-flex; align-items: center; gap: 8px; background-color: var(--primary-color); color: #ffffff; padding: 10px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; text-decoration: none; box-shadow: 0 2px 4px rgba(39, 39, 42, 0.2); transition: background-color 0.2s ease;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <span>${phone}</span>
+            </a>
+          `;
+          cardDiv.appendChild(phoneEl);
+        }
+        
+        container.appendChild(cardDiv);
+        contactCount++;
+      });
+      
+      if (contactCount === 0) {
+        container.innerHTML = '<div class="alert-box">No contacts found.</div>';
+      }
+    }
+
     function initApp() {
-      // Utilize safe storage wrapper
       const savedLang = safeStorage.get('pref_language') || 'en';
       setLanguage(savedLang);
 
-      // Utilize safe storage wrapper
       const savedPage = safeStorage.get('pref_page') || 'page-agenda';
       const savedTab = safeStorage.get('pref_tab') || 'tab-agenda';
       showPage(savedPage, savedTab);
@@ -1302,3 +1373,5 @@ Sister Missionaries,Sè Misyonè yo`;
   </script>
 </body>
 </html>
+
+
