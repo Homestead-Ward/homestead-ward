@@ -457,7 +457,7 @@
   </div>
 
   <script>
-   // ----------------------------------------------------
+    // ----------------------------------------------------
     // Requirements Constant Definition
     // ----------------------------------------------------
     // Create a unique timestamp to force Google Sheets to bypass its cache
@@ -554,7 +554,7 @@ Sister Missionaries,Sè Misyonè yo`;
     // Global reference to the loaded glossary map for bilingual translation
     let latestGlossaryMap = {};
 
-   /**
+    /**
      * Translates English honorifics within a name/value string to Kreyòl equivalents using the glossary map.
      */
     function translateName(valueString) {
@@ -691,6 +691,9 @@ Sister Missionaries,Sè Misyonè yo`;
         btnHt.classList.add('active');
         btnEn.classList.remove('active');
       }
+      
+      // NEW: Save the user's language choice to their device
+      localStorage.setItem('pref_language', lang);
     }
 
     /**
@@ -715,6 +718,10 @@ Sister Missionaries,Sè Misyonè yo`;
       if (selectedTab) {
         selectedTab.classList.add('active');
       }
+
+      // NEW: Save the user's current tab to their device
+      localStorage.setItem('pref_page', pageId);
+      localStorage.setItem('pref_tab', tabId);
 
       // Smooth bounce scroll to top of device screen
       window.scrollTo({ top: 0, behavior: 'instant' });
@@ -1007,6 +1014,13 @@ Sister Missionaries,Sè Misyonè yo`;
           hymnDbRes ? hymnDbRes.text() : Promise.resolve('')
         ]);
 
+        // === NEW: Save the live data to the device's Local Storage ===
+        localStorage.setItem('cached_input', inputText);
+        localStorage.setItem('cached_hymns', hymnsText);
+        localStorage.setItem('cached_glossary', glossaryText);
+        localStorage.setItem('cached_contacts', contactsText);
+        if (hymnDbText) localStorage.setItem('cached_hymnDb', hymnDbText);
+
         // Parsing
         const parsedInput = parseCSV(inputText);
         const parsedGlossary = parseCSV(glossaryText);
@@ -1063,13 +1077,37 @@ Sister Missionaries,Sè Misyonè yo`;
         renderContacts(parsedContacts, glossaryMap);
 
       } catch (error) {
-        console.warn('Network fetching failed or was blocked. Using robust offline join model matching raw sheets.', error);
+        console.warn('Network fetching failed. Attempting to use Local Storage, then falling back to hardcoded data.', error);
         
+        // === NEW: Try to get data from Local Storage, otherwise use the sample fallbacks ===
+        const fallbackInputText = localStorage.getItem('cached_input') || sampleInputCSV;
+        const fallbackGlossaryText = localStorage.getItem('cached_glossary') || sampleGlossaryCSV;
+        const fallbackHymnsText = localStorage.getItem('cached_hymns') || sampleHymnsCSV;
+        const fallbackContactsText = localStorage.getItem('cached_contacts') || sampleContactsCSV;
+        const fallbackHymnDbText = localStorage.getItem('cached_hymnDb') || '';
+
         // Load fallback CSV datasets
-        const parsedInput = parseCSV(sampleInputCSV);
-        const parsedGlossary = parseCSV(sampleGlossaryCSV);
-        const parsedHymns = parseCSV(sampleHymnsCSV);
-        const parsedContacts = parseCSV(sampleContactsCSV);
+        const parsedInput = parseCSV(fallbackInputText);
+        const parsedGlossary = parseCSV(fallbackGlossaryText);
+        const parsedHymns = parseCSV(fallbackHymnsText);
+        const parsedContacts = parseCSV(fallbackContactsText);
+        const parsedHymnDb = parseCSV(fallbackHymnDbText);
+
+        // Populate Hymn Links Maps (even offline if cached!)
+        engHymnLinks.clear();
+        fraHymnLinks.clear();
+        if (parsedHymnDb.length > 0) {
+          for (let i = 1; i < parsedHymnDb.length; i++) {
+            const row = parsedHymnDb[i];
+            if (!row) continue;
+            const enNum = row[0] ? row[0].trim() : '';
+            const enUrl = row[2] ? row[2].trim() : '';
+            const frNum = row[3] ? row[3].trim() : '';
+            const frUrl = row[5] ? row[5].trim() : '';
+            if (enNum && enUrl) engHymnLinks.set(enNum, enUrl);
+            if (frNum && frUrl) fraHymnLinks.set(frNum, frUrl);
+          }
+        }
 
         // Build fallback maps
         const glossaryMap = {};
@@ -1103,13 +1141,14 @@ Sister Missionaries,Sè Misyonè yo`;
           const notice = document.createElement('div');
           notice.className = 'alert-box';
           notice.style.marginBottom = '1rem';
-          notice.innerHTML = `⚠️ Fetch error resolved: <strong>${error.message || 'CORS restriction fallback'}</strong>. Utilizing highly robust local dataset matching relational inputs.`;
+          let sourceName = localStorage.getItem('cached_input') ? 'Saved device memory' : 'Local hardcoded dataset';
+          notice.innerHTML = `⚠️ Fetch error resolved. Utilizing: <strong>${sourceName}</strong>.`;
           container.insertBefore(notice, container.firstChild);
           
           const contactsNotice = document.createElement('div');
           contactsNotice.className = 'alert-box';
           contactsNotice.style.marginBottom = '1rem';
-          contactsNotice.innerHTML = `⚠️ Fetch error resolved: <strong>${error.message || 'CORS restriction fallback'}</strong>. Utilizing highly robust local dataset matching relational inputs.`;
+          contactsNotice.innerHTML = `⚠️ Fetch error resolved. Utilizing: <strong>${sourceName}</strong>.`;
           contactsContainer.insertBefore(contactsNotice, contactsContainer.firstChild);
         }, 500);
       }
@@ -1155,7 +1194,26 @@ Sister Missionaries,Sè Misyonè yo`;
         const rawDate = row[0] ? row[0].trim() : '';
         if (!rawDate) return;
         
-        let eventDate = new Date(rawDate);
+        let eventDate;
+        
+        // NEW: Check for recurring weekly events (e.g., "Every Thursday")
+        const recurringMatch = rawDate.match(/Every\s+(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)/i);
+        
+        if (recurringMatch) {
+          const daysMap = { "sunday": 0, "monday": 1, "tuesday": 2, "wednesday": 3, "thursday": 4, "friday": 5, "saturday": 6 };
+          const targetDay = daysMap[recurringMatch[1].toLowerCase()];
+          
+          eventDate = new Date(todayStart); // Start counting from today
+          
+          // Calculate how many days until the next target day (0 if it is today)
+          const daysUntil = (targetDay - eventDate.getDay() + 7) % 7;
+          eventDate.setDate(eventDate.getDate() + daysUntil);
+          
+        } else {
+          // If it doesn't say "Every", parse it as a normal calendar date
+          eventDate = new Date(rawDate);
+        }
+
         if (isNaN(eventDate.getTime())) {
           return; // Skip if date is totally unparseable
         }
@@ -1256,7 +1314,7 @@ Sister Missionaries,Sè Misyonè yo`;
           cardDiv.appendChild(addressEl);
         }
 
-        // Render External Link Button if exists
+        // NEW: Render External Link Button if exists
         if (event.linkUrl) {
           const linkEl = document.createElement('div');
           linkEl.className = 'activity-link';
@@ -1277,101 +1335,6 @@ Sister Missionaries,Sè Misyonè yo`;
       });
     }
 
-    // ----------------------------------------------------
-    // Robust Contacts CSV Sample Data (Fallback)
-    // ----------------------------------------------------
-    const sampleContactsCSV = `English Calling,Name,Phone
-Bishop,Jon Lieber,(954) 805-9001
-1st Counselor,Jonathan Plummer,(954) 588-9918
-2nd Counselor,Seraphin Chéry,(786) 745-2533
-EQ President,Hans Peterson,(910) 987-9981
-1st Counselor,Craig Sowby,(540) 758-3000
-2nd Counselor,Jeffrey Andelin,(786) 760-9064
-RS President,Monika Sattley,
-1st Counselor,Gilma Lieber,
-2nd Counselor,Deborah Short,
-YW President,Kiara Gaona,
-1st Counselor,Bridget Short,
-2nd Counselor,Katerina Lewis,
-Primary President,Marlie Jones,
-1st Counselor,Tessy Andelin,
-2nd Counselor,Julia Smith,
-Ward Mission Leader,Victor Santos III,
-Sister Missionaries,,(954) 358-7783
-English Missionaries,,(786) 538-4839
-Creole Missionaries,,(786) 353-8402`;
-
-    /**
-     * Renders parsed contacts from CSV rows into the contacts directory.
-     */
-    function renderContacts(rows, glossaryMap) {
-      const container = document.getElementById('contacts-cards-container');
-      container.innerHTML = '';
-      
-      let dataRows = rows;
-      if (dataRows.length > 0 && dataRows[0][0] && (dataRows[0][0].toLowerCase().includes('calling') || dataRows[0][0].toLowerCase().includes('role') || dataRows[0][0].toLowerCase().includes('english'))) {
-        dataRows = dataRows.slice(1);
-      }
-      
-      let contactCount = 0;
-      dataRows.forEach(row => {
-        if (!row || row.length < 2) return;
-        const roleEn = row[0] ? row[0].trim() : '';
-        const name = row[1] ? row[1].trim() : '';
-        const phone = row[2] ? row[2].trim() : '';
-        
-        if (!roleEn && !name) return; // Skip blank rows
-        
-        let roleHt = glossaryMap[roleEn] || glossaryMap[roleEn.toLowerCase()] || roleEn;
-        
-        const cardDiv = document.createElement('div');
-        cardDiv.className = 'agenda-item';
-        
-        const roleEl = document.createElement('div');
-        roleEl.className = 'agenda-role';
-        roleEl.innerHTML = `
-          <span class="lang-en">${roleEn}</span>
-          <span class="lang-ht">${roleHt}</span>
-        `;
-        cardDiv.appendChild(roleEl);
-        
-        const nameEl = document.createElement('div');
-        nameEl.className = 'agenda-person';
-        nameEl.style.fontSize = '1.25rem';
-        nameEl.style.fontWeight = '700';
-        nameEl.style.marginTop = '4px';
-        nameEl.style.color = 'var(--text-dark)';
-        
-        const translatedNameHt = name ? translateName(name) : '—';
-        nameEl.innerHTML = `
-          <span class="lang-en">${name || '—'}</span>
-          <span class="lang-ht">${translatedNameHt}</span>
-        `;
-        cardDiv.appendChild(nameEl);
-        
-        if (phone && phone.trim() !== '') {
-          const cleanPhone = phone.replace(/[^0-9+]/g, '');
-          
-          const phoneEl = document.createElement('div');
-          phoneEl.style.marginTop = '10px';
-          phoneEl.innerHTML = `
-            <a href="tel:${cleanPhone}" style="display: inline-flex; align-items: center; gap: 8px; background-color: var(--primary-color); color: #ffffff; padding: 10px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; text-decoration: none; box-shadow: 0 2px 4px rgba(39, 39, 42, 0.2); transition: background-color 0.2s ease;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              <span>${phone}</span>
-            </a>
-          `;
-          cardDiv.appendChild(phoneEl);
-        }
-        
-        container.appendChild(cardDiv);
-        contactCount++;
-      });
-      
-      if (contactCount === 0) {
-        container.innerHTML = '<div class="alert-box">No contacts found.</div>';
-      }
-    }
-
     /**
      * Fetches and parses the live ward activities CSV. Falls back to sample database.
      */
@@ -1389,13 +1352,18 @@ Creole Missionaries,,(786) 353-8402`;
           throw new Error('Sheets response returned empty text');
         }
         
+        // === NEW: Save the live data to the device's Local Storage ===
+        localStorage.setItem('cached_activities', csvText);
+
         const rows = parseCSV(csvText);
         renderActivities(rows);
         
       } catch (error) {
-        console.warn('Unable to get live activities feed, using fallback activities database.', error);
+        console.warn('Network fetching failed. Attempting to use Local Storage, then falling back to hardcoded data.', error);
         
-        const rows = parseCSV(sampleActivitiesCSV);
+        // === NEW: Try to get data from Local Storage, otherwise use the sample fallbacks ===
+        const fallbackActivitiesText = localStorage.getItem('cached_activities') || sampleActivitiesCSV;
+        const rows = parseCSV(fallbackActivitiesText);
         
         setTimeout(() => {
           renderActivities(rows);
@@ -1403,7 +1371,8 @@ Creole Missionaries,,(786) 353-8402`;
           const notice = document.createElement('div');
           notice.className = 'alert-box';
           notice.style.marginBottom = '1rem';
-          notice.innerHTML = `⚠️ Calendar sync error: <strong>${error.message || 'CORS restriction fallback'}</strong>. Utilizing highly robust local dataset.`;
+          let sourceName = localStorage.getItem('cached_activities') ? 'Saved device memory' : 'Local hardcoded dataset';
+          notice.innerHTML = `⚠️ Calendar sync error resolved. Utilizing: <strong>${sourceName}</strong>.`;
           container.insertBefore(notice, container.firstChild);
         }, 500);
       }
@@ -1411,10 +1380,38 @@ Creole Missionaries,,(786) 353-8402`;
 
     // Initialize and run on window load
     function initApp() {
+      // 1. Check for saved language, default to English if none exists
+      const savedLang = localStorage.getItem('pref_language') || 'en';
+      setLanguage(savedLang);
+
+      // 2. Check for saved tab, default to Agenda if none exists
+      const savedPage = localStorage.getItem('pref_page') || 'page-agenda';
+      const savedTab = localStorage.getItem('pref_tab') || 'tab-agenda';
+      showPage(savedPage, savedTab);
+
+      // 3. Load the data
       loadAgenda();
       loadActivities();
     }
     window.addEventListener('DOMContentLoaded', initApp);
+// ----------------------------------------------------
+    // PWA Background Refreshing (Visibility API)
+    // ----------------------------------------------------
+    // Detects when the user brings the app back to the screen
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        console.log('App brought to foreground. Silently updating data...');
+        
+        // Only attempt a background refresh if the phone has an active internet connection
+        if (navigator.onLine) {
+          // Add a tiny delay to ensure the network connection is fully awake
+          setTimeout(() => {
+            loadAgenda();
+            loadActivities();
+          }, 500);
+        }
+      }
+    });
   </script>
 </body>
 </html>
