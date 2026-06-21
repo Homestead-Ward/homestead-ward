@@ -1118,11 +1118,11 @@ Sister Missionaries,Sè Misyonè yo`;
     // ----------------------------------------------------
     // Robust Activities CSV Sample Data (Fallback)
     // ----------------------------------------------------
-    const sampleActivitiesCSV = `Date,Time,English Title,Kreyòl Title,Location,Address
-"June 11, 2026","7:00 PM - 8:30 PM","Stake Institute Class","Klas Enstiti Pye a","Fontainebleau Chapel","9900 W Flagler Street, Miami, FL 33174"
-"June 20, 2026","3:30 PM - 7:30 PM","Stake Day at the Miami Marlins","Jounen Pye a nan Miami Marlins","LoanDepot Park","1402 NW 7th Street, Miami, FL 33125"
-"June 25, 2026","6:30 PM - 8:00 PM","Relief Society Craft Night","Sware Atizana Sosyete Sekou a","Relief Society Room","9900 W Flagler Street, Miami, FL 33174"
-"July 4, 2026","9:00 AM - 12:00 PM","Elders Quorum Service Project","Pwojè Sèvis Korum Èldè yo","Community Food Bank","28500 SW 152nd Ave, Homestead, FL 33033"`;
+    const sampleActivitiesCSV = `Date,Time,English Title,Kreyòl Title,Location,Address,Link URL
+"June 11, 2026","7:00 PM - 8:30 PM","Stake Institute Class","Klas Enstiti Pye a","Fontainebleau Chapel","9900 W Flagler Street, Miami, FL 33174",
+"June 20, 2026","3:30 PM - 7:30 PM","Stake Day at the Miami Marlins","Jounen Pye a nan Miami Marlins","LoanDepot Park","1402 NW 7th Street, Miami, FL 33125","https://www.mlb.com/marlins/tickets"
+"June 25, 2026","6:30 PM - 8:00 PM","Relief Society Craft Night","Sware Atizana Sosyete Sekou a","Relief Society Room","9900 W Flagler Street, Miami, FL 33174",
+"July 4, 2026","9:00 AM - 12:00 PM","Elders Quorum Service Project","Pwojè Sèvis Korum Èldè yo","Community Food Bank","28500 SW 152nd Ave, Homestead, FL 33033",`;
 
     /**
      * Renders parsed activities from CSV rows into the activities list.
@@ -1171,7 +1171,8 @@ Sister Missionaries,Sè Misyonè yo`;
           titleEn: row[2] ? row[2].trim() : '',
           titleHt: (row[3] && row[3].trim()) ? row[3].trim() : (row[2] ? row[2].trim() : ''),
           locationName: row[4] ? row[4].trim() : '',
-          address: row[5] ? row[5].trim() : ''
+          address: row[5] ? row[5].trim() : '',
+          linkUrl: row[6] ? row[6].trim() : '' // Extract the 7th column for the URL
         });
       });
       
@@ -1253,6 +1254,22 @@ Sister Missionaries,Sè Misyonè yo`;
             </a>
           `;
           cardDiv.appendChild(addressEl);
+        }
+
+        // NEW: Render External Link Button if exists
+        if (event.linkUrl) {
+          const linkEl = document.createElement('div');
+          linkEl.className = 'activity-link';
+          linkEl.setAttribute('style', 'margin-top: 10px;');
+          
+          linkEl.innerHTML = `
+            <a href="${event.linkUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; background-color: var(--primary-color); color: #ffffff; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; text-decoration: none; box-shadow: 0 2px 4px rgba(39, 39, 42, 0.2); transition: background-color 0.2s ease;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+              <span class="lang-en">More Info / Tickets</span>
+              <span class="lang-ht">Plis Enfòmasyon / Biyè</span>
+            </a>
+          `;
+          cardDiv.appendChild(linkEl);
         }
         
         container.appendChild(cardDiv);
