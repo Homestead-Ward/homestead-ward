@@ -457,15 +457,18 @@
   </div>
 
   <script>
-    // ----------------------------------------------------
+   // ----------------------------------------------------
     // Requirements Constant Definition
     // ----------------------------------------------------
-    const inputUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=985081503&single=true&output=csv';
-    const hymnsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=310487653&single=true&output=csv';
-    const glossaryUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=0&single=true&output=csv';
-    const activitiesUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=645367649&single=true&output=csv';
-    const contactsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=1342129738&single=true&output=csv';
-    const hymnDbUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=379670009&single=true&output=csv';
+    // Create a unique timestamp to force Google Sheets to bypass its cache
+    const cacheBuster = '&t=' + new Date().getTime();
+
+    const inputUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=985081503&single=true&output=csv' + cacheBuster;
+    const hymnsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=310487653&single=true&output=csv' + cacheBuster;
+    const glossaryUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=0&single=true&output=csv' + cacheBuster;
+    const activitiesUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=645367649&single=true&output=csv' + cacheBuster;
+    const contactsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=1342129738&single=true&output=csv' + cacheBuster;
+    const hymnDbUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=379670009&single=true&output=csv' + cacheBuster;
 
     // Global Maps for Hymn Links
     const engHymnLinks = new Map();
@@ -1189,7 +1192,14 @@ Sister Missionaries,Sè Misyonè yo`;
         const monthHt = htMonthsArr[event.date.getMonth()];
         const dayNum = event.date.getDate();
         const dateHt = `${dayOfWeekHt}, ${dayNum} ${monthHt}`;
-        const displayHt = event.time ? `${dateHt} a ${event.time}` : dateHt;
+        
+        // Translate specific English time keywords to Kreyòl
+        let timeHt = event.time;
+        if (timeHt) {
+          timeHt = timeHt.replace(/ALL DAY/gi, 'TOUT JOU');
+        }
+        
+        const displayHt = timeHt ? `${dateHt} a ${timeHt}` : dateHt;
         
         const cardDiv = document.createElement('div');
         cardDiv.className = 'agenda-item';
