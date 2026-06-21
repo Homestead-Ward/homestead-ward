@@ -806,11 +806,14 @@ Sister Missionaries,Sè Misyonè yo`;
           let performers = '';
           
           if (lastDashIdx !== -1) {
-            songTitle = valTrimmed.substring(0, lastDashIdx);
-            performers = valTrimmed.substring(lastDashIdx + 3);
+            songTitle = valTrimmed.substring(0, lastDashIdx).trim();
+            performers = valTrimmed.substring(lastDashIdx + 3).trim();
           }
           
           const roleHt = glossaryMap[roleTrimmed] || glossaryMap[roleTrimmed.toLowerCase()] || roleTrimmed;
+          
+          // Cross-reference the song title with the Glossary
+          const translatedSongTitle = glossaryMap[songTitle] || glossaryMap[songTitle.toLowerCase()] || songTitle;
 
           const itemDiv = document.createElement('div');
           itemDiv.className = 'agenda-item';
@@ -831,11 +834,14 @@ Sister Missionaries,Sè Misyonè yo`;
           titleDiv.style.fontStyle = 'italic';
           titleDiv.innerHTML = `
             <span class="lang-en">${songTitle}</span>
-            <span class="lang-ht">${songTitle}</span>
+            <span class="lang-ht">${translatedSongTitle}</span>
           `;
           personEl.appendChild(titleDiv);
           
           if (performers) {
+            // Cross-reference performers with the Glossary, then fallback to name translation
+            const translatedPerf = glossaryMap[performers] || glossaryMap[performers.toLowerCase()] || translateName(performers);
+            
             const perfDiv = document.createElement('div');
             perfDiv.style.width = '100%';
             perfDiv.style.textAlign = 'right';
@@ -845,7 +851,7 @@ Sister Missionaries,Sè Misyonè yo`;
             perfDiv.style.marginTop = '2px';
             perfDiv.innerHTML = `
               <span class="lang-en">${performers}</span>
-              <span class="lang-ht">${translateName(performers)}</span>
+              <span class="lang-ht">${translatedPerf}</span>
             `;
             personEl.appendChild(perfDiv);
           }
