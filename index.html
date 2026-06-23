@@ -9,10 +9,13 @@
   <link rel="apple-touch-icon" href="app-icon.png?v=2">
   <link rel="icon" type="image/png" href="app-icon.png?v=2">
   
-  <!-- iOS Native Web App Meta Tags -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Homestead Ward">
+  <!-- Tells the phone to make the top status bar match your app's gray color -->
+  <meta name="theme-color" content="#f4f4f5">
+
+  <!-- Google Fonts for gorgeous premium typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <style>
     /* Reset & CSS Custom Properties */
@@ -859,15 +862,23 @@ Creole Missionaries,,(786) 353-8402`;
           const hymn = lookupHymn(valTrimmed);
           if (hymn) {
             let enTitleText = `${valTrimmed}. ${hymn.enTitle}`;
-            let htTitleText = `${hymn.frNum || valTrimmed}. ${hymn.frTitle || hymn.enTitle}`;
-
             const parsedEnNum = enTitleText.split('.')[0].trim();
             const engUrl = engHymnLinks.get(parsedEnNum);
+            
             enText = engUrl ? `<a href="${engUrl}" target="_blank" class="hymn-btn-link">🎵 ${enTitleText}</a>` : enTitleText;
 
-            const parsedFrNum = htTitleText.split('.')[0].trim();
-            const fraUrl = fraHymnLinks.get(parsedFrNum);
-            htText = fraUrl ? `<a href="${fraUrl}" target="_blank" class="hymn-btn-link">🎵 ${htTitleText}</a>` : htTitleText;
+            let htTitleText;
+            let htUrl;
+
+            if (hymn.frNum && hymn.frNum.trim() !== '') {
+              htTitleText = `${hymn.frNum}. ${hymn.frTitle || hymn.enTitle}`;
+              htUrl = fraHymnLinks.get(hymn.frNum.trim());
+            } else {
+              htTitleText = enTitleText;
+              htUrl = engUrl;
+            }
+
+            htText = htUrl ? `<a href="${htUrl}" target="_blank" class="hymn-btn-link">🎵 ${htTitleText}</a>` : htTitleText;
           } else {
             enText = valTrimmed;
             htText = valTrimmed;
@@ -1373,5 +1384,3 @@ Creole Missionaries,,(786) 353-8402`;
   </script>
 </body>
 </html>
-
-
