@@ -1381,6 +1381,30 @@ Creole Missionaries,,(786) 353-8402`;
         }
       }
     });
+// ----------------------------------------------------
+    // Silent Auto-Update System
+    // ----------------------------------------------------
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').then((registration) => {
+          // 1. Force the app to check GitHub for a new sw.js file in the background
+          registration.update();
+          
+          // 2. If a new version is found and installed, seamlessly refresh the page
+          registration.addEventListener('updatefound', () => {
+            const newWorker = registration.installing;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('New app version detected. Reloading seamlessly...');
+                window.location.reload(true);
+              }
+            });
+          });
+        }).catch(error => {
+          console.log('Service Worker registration failed:', error);
+        });
+      });
+    }
   </script>
 </body>
 </html>
