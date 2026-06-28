@@ -1178,13 +1178,16 @@ Creole Missionaries,,(786) 353-8402`;
         
         if (event.time) {
           let timeEn = event.time.trim();
-          let timeHt = timeEn.replace(/ALL DAY/gi, 'TOUT JOU');
+          let timeHt = timeEn.replace(/ALL DAY/gi, 'TOUT JOU').replace(/Through/gi, 'Jiska');
           
           const lowerTimeEn = timeEn.toLowerCase();
           const isAllDay = lowerTimeEn.includes('all day');
-          const isRange = timeEn.includes('-') || lowerTimeEn.includes(' to ') || lowerTimeEn.includes(' until ');
+          const isThrough = lowerTimeEn.includes('through');
           
-          if (isAllDay) {
+          // Explicitly check for regular hyphens (-), en-dashes (–), and em-dashes (—)
+          const isRange = timeEn.includes('-') || timeEn.includes('–') || timeEn.includes('—') || lowerTimeEn.includes(' to ') || lowerTimeEn.includes(' until ');
+          
+          if (isAllDay || isThrough) {
             displayEn = `${dateEn} • ${timeEn}`;
             displayHt = `${dateHt} • ${timeHt}`;
           } else if (isRange) {
