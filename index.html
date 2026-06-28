@@ -9,13 +9,10 @@
   <link rel="apple-touch-icon" href="app-icon.png?v=2">
   <link rel="icon" type="image/png" href="app-icon.png?v=2">
   
-  <!-- Tells the phone to make the top status bar match your app's gray color -->
-  <meta name="theme-color" content="#f4f4f5">
-
-  <!-- Google Fonts for gorgeous premium typography -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- iOS Native Web App Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Homestead Ward">
   
   <style>
     /* Reset & CSS Custom Properties */
@@ -547,7 +544,6 @@ Family,Fanmi`;
 136,I Know That My Redeemer Lives,136,Mwen Konnen Ransatè m nan Viv (No. 136)
 166,Abide with Me!,166,Rete avè m! (No. 166)`;
 
-    // FIXED: Corrected backup data initialization
     const sampleContactsCSV = `English Calling,Name,Phone
 Bishop,Jon Lieber,(954) 805-9001
 1st Counselor,Jonathan Plummer,(954) 588-9918
@@ -1170,7 +1166,6 @@ Creole Missionaries,,(786) 353-8402`;
       limitedEvents.forEach(event => {
         const optionsDateEn = { weekday: 'long', month: 'long', day: 'numeric' };
         const dateEn = new Intl.DateTimeFormat('en-US', optionsDateEn).format(event.date);
-        const displayEn = event.time ? `${dateEn} at ${event.time}` : dateEn;
         
         const dayOfWeekEn = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(event.date);
         const dayOfWeekHt = htDays[dayOfWeekEn] || dayOfWeekEn;
@@ -1178,12 +1173,28 @@ Creole Missionaries,,(786) 353-8402`;
         const dayNum = event.date.getDate();
         const dateHt = `${dayOfWeekHt}, ${dayNum} ${monthHt}`;
         
-        let timeHt = event.time;
-        if (timeHt) {
-          timeHt = timeHt.replace(/ALL DAY/gi, 'TOUT JOU');
-        }
+        let displayEn = dateEn;
+        let displayHt = dateHt;
         
-        const displayHt = timeHt ? `${dateHt} a ${timeHt}` : dateHt;
+        if (event.time) {
+          let timeEn = event.time.trim();
+          let timeHt = timeEn.replace(/ALL DAY/gi, 'TOUT JOU');
+          
+          const lowerTimeEn = timeEn.toLowerCase();
+          const isAllDay = lowerTimeEn.includes('all day');
+          const isRange = timeEn.includes('-') || lowerTimeEn.includes(' to ') || lowerTimeEn.includes(' until ');
+          
+          if (isAllDay) {
+            displayEn = `${dateEn} • ${timeEn}`;
+            displayHt = `${dateHt} • ${timeHt}`;
+          } else if (isRange) {
+            displayEn = `${dateEn} from ${timeEn}`;
+            displayHt = `${dateHt} de ${timeHt}`;
+          } else {
+            displayEn = `${dateEn} at ${timeEn}`;
+            displayHt = `${dateHt} a ${timeHt}`;
+          }
+        }
         
         const cardDiv = document.createElement('div');
         cardDiv.className = 'agenda-item';
@@ -1381,16 +1392,17 @@ Creole Missionaries,,(786) 353-8402`;
         }
       }
     });
-// ----------------------------------------------------
+
+    // ----------------------------------------------------
     // Silent Auto-Update System
     // ----------------------------------------------------
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js').then((registration) => {
-          // 1. Force the app to check GitHub for a new sw.js file in the background
+          // Force the app to check GitHub for a new sw.js file in the background
           registration.update();
           
-          // 2. If a new version is found and installed, seamlessly refresh the page
+          // If a new version is found and installed, seamlessly refresh the page
           registration.addEventListener('updatefound', () => {
             const newWorker = registration.installing;
             newWorker.addEventListener('statechange', () => {

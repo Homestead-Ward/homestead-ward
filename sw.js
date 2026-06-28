@@ -1,4 +1,4 @@
-const CACHE_NAME = 'homestead-ward-v2';
+const CACHE_NAME = 'homestead-ward-v2.1';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
