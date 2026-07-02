@@ -454,12 +454,8 @@
       </div>
 
       <div id="page-contacts" class="app-page">
-        <h2 class="section-title" style="text-align: center; margin-bottom: 0.5rem;">
-          <span class="lang-en">Ward Leadership</span>
-          <span class="lang-ht">Dirijan Pawas yo</span>
-        </h2>
+        <!-- Flipped hierarchy: The Ward Leadership title has been removed here and is dynamically injected by the script below -->
         
-        <!-- The Dynamic Contacts List will inject the Pinned Card and Flipped Roles here -->
         <div id="contacts-cards-container">
           <div class="shimmer-container">
             <div class="shimmer-card"></div>
@@ -592,7 +588,17 @@ For the Strength of Youth,Pou Fòs Jèn yo
 Ward Executive Secretary,Sekretè Egzekitif Pawas la
 Assistant Ward Executive Secretary,Asistan Sekretè Egzekitif Pawas la
 Stake Executive Secretary,Sekretè Egzekitif Pye a
-Assistant Stake Executive Secretary,Asistan Sekretè Egzekitif Pye a`;
+Assistant Stake Executive Secretary,Asistan Sekretè Egzekitif Pye a
+Elder's Quorum,Korum Ansyen yo
+Relief Society,Sosyete Sekou
+Sunday School,Lekòl di Dimanch
+Young Women's,Jèn Fi yo
+Ward Clerk,Grefye Pawas la
+Stake Clerk,Grefye Pye a
+Assistant Ward Clerk,Asistan Grefye Pawas la
+Assistant Stake Clerk,Asistan Grefye Pye a
+Christmas,Nwèl
+Thanksgiving,Aksyondegas`;
 
     const sampleHymnsCSV = `EN Num,EN Title,FR Num,FR Title
 58,Come\\, Ye Children of the Lord,27,Vini\\, nou Menm Pitit Senyè a (No. 27)
@@ -1452,7 +1458,21 @@ Creole Missionaries,,(786) 353-8402`;
           container.appendChild(pinnedCard);
       }
 
-      // Pass 2: Render the rest of the normal contacts with the flipped hierarchy
+      // Inject the 'Ward Leadership' title directly below the pinned card
+      if (standardRows.length > 0) {
+        const titleDiv = document.createElement('h2');
+        titleDiv.className = 'section-title';
+        titleDiv.style.textAlign = 'center';
+        titleDiv.style.marginTop = hasExecSecs ? '1rem' : '0.25rem'; 
+        titleDiv.style.marginBottom = '0.5rem';
+        titleDiv.innerHTML = `
+          <span class="lang-en">Ward Leadership</span>
+          <span class="lang-ht">Dirijan Pawas yo</span>
+        `;
+        container.appendChild(titleDiv);
+      }
+
+      // Pass 2: Render the rest of the normal contacts with the flipped hierarchy and dual buttons
       standardRows.forEach(row => {
         const roleEn = row[0] ? row[0].trim() : '';
         const name = row[1] ? row[1].trim() : '';
@@ -1465,10 +1485,12 @@ Creole Missionaries,,(786) 353-8402`;
         
         const roleEl = document.createElement('div');
         roleEl.className = 'agenda-role';
-        // Applying the flipped formatting (larger calling, darker font)
+        // Applying the flipped formatting (larger calling, darker font, matching screenshot style)
         roleEl.style.fontSize = '1.05rem';
         roleEl.style.fontWeight = '800';
         roleEl.style.color = 'var(--text-dark)';
+        roleEl.style.textTransform = 'uppercase';
+        roleEl.style.letterSpacing = '0.03em';
         roleEl.innerHTML = `
           <span class="lang-en">${roleEn}</span>
           <span class="lang-ht">${roleHt}</span>
@@ -1477,11 +1499,11 @@ Creole Missionaries,,(786) 353-8402`;
         
         const nameEl = document.createElement('div');
         nameEl.className = 'agenda-person';
-        // Applying the flipped formatting (smaller name, lighter font)
-        nameEl.style.fontSize = '1rem';
+        // Applying the flipped formatting (smaller name, lighter font weight)
+        nameEl.style.fontSize = '1.1rem';
         nameEl.style.fontWeight = '500';
         nameEl.style.marginTop = '2px';
-        nameEl.style.color = 'var(--secondary-color)';
+        nameEl.style.color = 'var(--text-dark)';
         
         const translatedNameHt = name ? translateName(name) : '—';
         nameEl.innerHTML = `
@@ -1495,11 +1517,20 @@ Creole Missionaries,,(786) 353-8402`;
           
           const phoneEl = document.createElement('div');
           phoneEl.style.marginTop = '10px';
+          // Applying the new Dual Call/Text Buttons
           phoneEl.innerHTML = `
-            <a href="tel:${cleanPhone}" style="display: inline-flex; align-items: center; gap: 8px; background-color: var(--primary-color); color: #ffffff; padding: 10px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; text-decoration: none; box-shadow: 0 2px 4px rgba(39, 39, 42, 0.2); transition: background-color 0.2s ease;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              <span>${phone}</span>
-            </a>
+            <div class="action-btn-group">
+              <a href="tel:${cleanPhone}" class="action-btn btn-call">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <span class="lang-en">Call</span>
+                <span class="lang-ht">Rele</span>
+              </a>
+              <a href="sms:${cleanPhone}" class="action-btn btn-text">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span class="lang-en">Text</span>
+                <span class="lang-ht">Tèks</span>
+              </a>
+            </div>
           `;
           cardDiv.appendChild(phoneEl);
         }
