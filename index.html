@@ -215,6 +215,53 @@
       color: var(--text-dark);
     }
 
+    /* Pinned Action Card Custom Styles */
+    .pinned-card {
+      background: linear-gradient(145deg, #e0f2fe, #bae6fd);
+      border: 1px solid #7dd3fc;
+    }
+    
+    .pinned-title {
+      color: #0369a1 !important;
+    }
+
+    .action-btn-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .action-btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+    }
+
+    .btn-call {
+      background-color: var(--primary-color);
+      color: #ffffff;
+    }
+
+    .btn-text {
+      background-color: #ffffff;
+      color: var(--primary-color);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-text:hover, .btn-call:hover {
+      opacity: 0.85;
+      transform: translateY(-1px);
+    }
+
     .alert-box {
       font-size: 0.875rem;
       color: #854d0e;
@@ -411,6 +458,8 @@
           <span class="lang-en">Ward Leadership</span>
           <span class="lang-ht">Dirijan Pawas yo</span>
         </h2>
+        
+        <!-- The Dynamic Contacts List will inject the Pinned Card and Flipped Roles here -->
         <div id="contacts-cards-container">
           <div class="shimmer-container">
             <div class="shimmer-card"></div>
@@ -487,7 +536,7 @@ Conducting,Bishop Marcus Young
 Opening Hymn,58
 Invocation,Sister Sarah Jenkins
 Ward Business,Brother Michael Adams
-Sacrament Hymn,191
+Sacrament Hymn,169
 Passing of the Sacrament,The Aaronic Priesthood
 Special Musical Number,How Great Thou Art - Ward Choir
 Speaker,Sister Alisha Paul
@@ -536,18 +585,27 @@ By Invitation,Sou Envitasyon
 Brother,Frè
 Sister,Sè
 Elder,Èldè
-Family,Fanmi`;
+Family,Fanmi
+Sister Missionaries,Sè Misyonè yo
+FSY,FSY
+For the Strength of Youth,Pou Fòs Jèn yo
+Ward Executive Secretary,Sekretè Egzekitif Pawas la
+Assistant Ward Executive Secretary,Asistan Sekretè Egzekitif Pawas la
+Stake Executive Secretary,Sekretè Egzekitif Pye a
+Assistant Stake Executive Secretary,Asistan Sekretè Egzekitif Pye a`;
 
     const sampleHymnsCSV = `EN Num,EN Title,FR Num,FR Title
-58,Come\\, Ye Children of the Lord,58,Vini\\, nou Menm Pitit Senyè a (No. 58)
-191,As Now We Take the Sacrament,191,Pandan N-ap Pran Sentsèn nan (No. 191)
-136,I Know That My Redeemer Lives,136,Mwen Konnen Ransatè m nan Viv (No. 136)
-166,Abide with Me!,166,Rete avè m! (No. 166)`;
+58,Come\\, Ye Children of the Lord,27,Vini\\, nou Menm Pitit Senyè a (No. 27)
+169,As Now We Take the Sacrament,,
+136,I Know That My Redeemer Lives,73,Je sais qu'il vit\\, mon Rédempteur (No. 73)
+166,Abide with Me!,92,Reste avec nous\\, Seigneur (No. 92)`;
 
     const sampleContactsCSV = `English Calling,Name,Phone
 Bishop,Jon Lieber,(954) 805-9001
 1st Counselor,Jonathan Plummer,(954) 588-9918
 2nd Counselor,Seraphin Chery,(786) 745-2533
+Ward Executive Secretary,John Doe,(555) 123-4567
+Stake Executive Secretary,Jane Smith,(555) 987-6543
 EQ President,Hans Peterson,(910) 987-9981
 1st Counselor,Craig Sowby,(540) 758-3000
 2nd Counselor,Jeffrey Andelin,(786) 760-9064
@@ -561,6 +619,7 @@ Primary President,Marlie Jones,
 1st Counselor,Tessy Andelin,
 2nd Counselor,Julia Smith,
 Ward Mission Leader,Victor Santos III,
+Sister Missionaries,,(305) 307-9147
 English Missionaries,,(786) 538-4839
 Creole Missionaries,,(786) 353-8402`;
 
@@ -1312,6 +1371,20 @@ Creole Missionaries,,(786) 353-8402`;
       }
       
       let contactCount = 0;
+      let pinnedBlocksHTML = '';
+      let hasExecSecs = false;
+
+      // The app will dynamically look for these exact roles in your Google Sheet
+      const targetRoles = [
+        "Ward Executive Secretary",
+        "Assistant Ward Executive Secretary",
+        "Stake Executive Secretary",
+        "Assistant Stake Executive Secretary"
+      ];
+      
+      let standardRows = [];
+
+      // Pass 1: Filter out Executive Secretaries to build the Pinned Action Card
       dataRows.forEach(row => {
         if (!row || row.length < 2) return;
         const roleEn = row[0] ? row[0].trim() : '';
@@ -1319,6 +1392,71 @@ Creole Missionaries,,(786) 353-8402`;
         const phone = row[2] ? row[2].trim() : '';
         
         if (!roleEn && !name) return;
+
+        const isTarget = targetRoles.find(tr => tr.toLowerCase() === roleEn.toLowerCase());
+
+        if (isTarget) {
+            hasExecSecs = true;
+            let roleHt = glossaryMap[roleEn] || glossaryMap[roleEn.toLowerCase()] || roleEn;
+            let cleanPhone = phone ? phone.replace(/[^0-9+]/g, '') : '';
+            
+            let buttonsHTML = '';
+            if (cleanPhone) {
+                buttonsHTML = `
+                <div class="action-btn-group">
+                  <a href="tel:${cleanPhone}" class="action-btn btn-call">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <span class="lang-en">Call</span>
+                    <span class="lang-ht">Rele</span>
+                  </a>
+                  <a href="sms:${cleanPhone}" class="action-btn btn-text">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <span class="lang-en">Text</span>
+                    <span class="lang-ht">Tèks</span>
+                  </a>
+                </div>`;
+            }
+
+            pinnedBlocksHTML += `
+              <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid #7dd3fc;">
+                <div style="font-weight: 800; font-size: 1.05rem; color: #0369a1; text-transform: uppercase; letter-spacing: 0.03em;">
+                  <span class="lang-en">${roleEn}</span>
+                  <span class="lang-ht">${roleHt}</span>
+                </div>
+                <div style="color: #0c4a6e; font-size: 1rem; font-weight: 500; margin-top: 2px;">${name}</div>
+                ${buttonsHTML}
+              </div>
+            `;
+        } else {
+            // Keep everyone else for the standard contact list
+            standardRows.push(row);
+        }
+      });
+
+      // Inject the Dynamic Pinned Card at the very top (if Secretaries exist in the sheet)
+      if (hasExecSecs) {
+          const pinnedCard = document.createElement('div');
+          pinnedCard.className = 'agenda-item pinned-card';
+          pinnedCard.style.marginBottom = '14px';
+          pinnedCard.innerHTML = `
+            <div class="agenda-role pinned-title">
+              <span class="lang-en">Schedule an Interview</span>
+              <span class="lang-ht">Pran yon Randevou</span>
+            </div>
+            <div class="agenda-person" style="font-size: 0.9rem; margin-top: 4px; color: #0c4a6e;">
+              <span class="lang-en">To schedule an interview with the Bishopric or Stake Presidency, please contact an Executive Secretary:</span>
+              <span class="lang-ht">Pou pran yon randevou ak Episkopa a oswa Prezidans Pye a, tanpri kontakte yon Sekretè Egzekitif:</span>
+            </div>
+            ${pinnedBlocksHTML}
+          `;
+          container.appendChild(pinnedCard);
+      }
+
+      // Pass 2: Render the rest of the normal contacts with the flipped hierarchy
+      standardRows.forEach(row => {
+        const roleEn = row[0] ? row[0].trim() : '';
+        const name = row[1] ? row[1].trim() : '';
+        const phone = row[2] ? row[2].trim() : '';
         
         let roleHt = glossaryMap[roleEn] || glossaryMap[roleEn.toLowerCase()] || roleEn;
         
@@ -1327,6 +1465,10 @@ Creole Missionaries,,(786) 353-8402`;
         
         const roleEl = document.createElement('div');
         roleEl.className = 'agenda-role';
+        // Applying the flipped formatting (larger calling, darker font)
+        roleEl.style.fontSize = '1.05rem';
+        roleEl.style.fontWeight = '800';
+        roleEl.style.color = 'var(--text-dark)';
         roleEl.innerHTML = `
           <span class="lang-en">${roleEn}</span>
           <span class="lang-ht">${roleHt}</span>
@@ -1335,10 +1477,11 @@ Creole Missionaries,,(786) 353-8402`;
         
         const nameEl = document.createElement('div');
         nameEl.className = 'agenda-person';
-        nameEl.style.fontSize = '1.25rem';
-        nameEl.style.fontWeight = '700';
-        nameEl.style.marginTop = '4px';
-        nameEl.style.color = 'var(--text-dark)';
+        // Applying the flipped formatting (smaller name, lighter font)
+        nameEl.style.fontSize = '1rem';
+        nameEl.style.fontWeight = '500';
+        nameEl.style.marginTop = '2px';
+        nameEl.style.color = 'var(--secondary-color)';
         
         const translatedNameHt = name ? translateName(name) : '—';
         nameEl.innerHTML = `
@@ -1365,7 +1508,7 @@ Creole Missionaries,,(786) 353-8402`;
         contactCount++;
       });
       
-      if (contactCount === 0) {
+      if (contactCount === 0 && !hasExecSecs) {
         container.innerHTML = '<div class="alert-box">No contacts found.</div>';
       }
     }
