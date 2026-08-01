@@ -224,6 +224,12 @@
     .pinned-title {
       color: #0369a1 !important;
     }
+    
+    /* Zoom Live Broadcast Card Custom Styles */
+    .zoom-card {
+      background: linear-gradient(145deg, #dcfce7, #bbf7d0);
+      border: 1px solid #86efac;
+    }
 
     .action-btn-group {
       display: flex;
@@ -256,8 +262,14 @@
       color: var(--primary-color);
       border: 1px solid var(--border-color);
     }
+    
+    .btn-zoom {
+      background-color: #16a34a;
+      color: #ffffff;
+      border: 1px solid #15803d;
+    }
 
-    .btn-text:hover, .btn-call:hover {
+    .btn-text:hover, .btn-call:hover, .btn-zoom:hover {
       opacity: 0.85;
       transform: translateY(-1px);
     }
@@ -518,6 +530,7 @@
     const activitiesUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=645367649&single=true&output=csv' + cacheBuster;
     const contactsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=1342129738&single=true&output=csv' + cacheBuster;
     const hymnDbUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=379670009&single=true&output=csv' + cacheBuster;
+    const techUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVEbg3AA8bFVFsJseXrBcTGxkiOEuSUj-382HNdHCNG4M6TJ5BCw8OxhPSk8VoTFBonjr5_UPTwsep/pub?gid=1774784249&single=true&output=csv' + cacheBuster;
 
     // Global Maps for Hymn Links
     const engHymnLinks = new Map();
@@ -598,7 +611,9 @@ Stake Clerk,Grefye Pye a
 Assistant Ward Clerk,Asistan Grefye Pawas la
 Assistant Stake Clerk,Asistan Grefye Pye a
 Christmas,Nwèl
-Thanksgiving,Aksyondegas`;
+Thanksgiving,Aksyondegas
+Post FSY Fireside,Veye Apre FSY
+New Member Temple Trip,Vwayaj nan Tanp pou Nouvo Manm`;
 
     const sampleHymnsCSV = `EN Num,EN Title,FR Num,FR Title
 58,Come\\, Ye Children of the Lord,27,Vini\\, nou Menm Pitit Senyè a (No. 27)
@@ -628,6 +643,12 @@ Ward Mission Leader,Victor Santos III,
 Sister Missionaries,,(305) 307-9147
 English Missionaries,,(786) 538-4839
 Creole Missionaries,,(786) 353-8402`;
+
+    const sampleTechCSV = `Setting,Value
+Sacrament Meeting Zoom URL,https://zoom.us/j/94449310851?pwd=UQYyEyyyaG6Jne1o8aa1sBKUTP67zI.1
+Zoom Meeting ID,944 4931 0851
+Zoom Passcode,461830
+Zoom Testing Mode,OFF`;
 
     let latestGlossaryMap = {};
 
@@ -771,14 +792,75 @@ Creole Missionaries,,(786) 353-8402`;
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
-    function renderAgenda(inputRows, glossaryMap, hymnsMap) {
+    function renderAgenda(inputRows, glossaryMap, hymnsMap, parsedTech) {
       const agendaDateEl = document.getElementById('agenda-date');
       const container = document.getElementById('agenda-cards-container');
 
       container.innerHTML = '';
+      
+      // Setup Technology / Zoom Configuration
+      let techConfig = {
+        zoomUrl: '',
+        zoomId: '',
+        zoomPass: '',
+        testMode: 'OFF'
+      };
+      
+      if (parsedTech && parsedTech.length > 0) {
+        parsedTech.forEach(row => {
+          if (row.length >= 2) {
+            const key = row[0].trim().toLowerCase();
+            const val = row[1].trim();
+            if (key === 'sacrament meeting zoom url') techConfig.zoomUrl = val;
+            if (key === 'zoom meeting id') techConfig.zoomId = val;
+            if (key === 'zoom passcode') techConfig.zoomPass = val;
+            if (key === 'zoom testing mode') techConfig.testMode = val.toUpperCase();
+          }
+        });
+      }
+
+      // Check date and time constraints for Zoom broadcast banner
+      const now = new Date();
+      const isSunday = now.getDay() === 0;
+      const currentHour = now.getHours(); // 0-23
+      const isMeetingTime = isSunday && (currentHour >= 11 && currentHour < 13); // Between 11:00 AM and 1:00 PM
+      const showZoom = techConfig.testMode === 'ON' || isMeetingTime;
+
+      if (showZoom && techConfig.zoomUrl) {
+        const zoomCard = document.createElement('div');
+        zoomCard.className = 'agenda-item zoom-card';
+        zoomCard.style.marginBottom = '14px';
+        zoomCard.innerHTML = `
+          <div class="agenda-role" style="color: #166534 !important;">
+            <span class="lang-en">🔴 Live Translation Broadcast</span>
+            <span class="lang-ht">🔴 Tradiksyon an Dirèk</span>
+          </div>
+          <div class="agenda-person" style="font-size: 0.9rem; margin-top: 4px; color: #14532d;">
+            <span class="lang-en">Listen to the live Kreyòl translation of Sacrament Meeting via Zoom.</span>
+            <span class="lang-ht">Koute tradiksyon an dirèk Reyinyon Sentsèn nan an Kreyòl sou Zoom.</span>
+          </div>
+          
+          <div class="action-btn-group" style="margin-top: 12px;">
+            <a href="${techConfig.zoomUrl}" target="_blank" class="action-btn btn-zoom">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+              <span class="lang-en">Join Zoom Meeting</span>
+              <span class="lang-ht">Antre nan Reyinyon Zoom nan</span>
+            </a>
+          </div>
+          
+          <div style="margin-top: 10px; font-size: 0.8rem; color: #14532d; font-weight: 600; display: flex; justify-content: space-between;">
+            <span>ID: ${techConfig.zoomId}</span>
+            <span>Passcode: ${techConfig.zoomPass}</span>
+          </div>
+        `;
+        container.appendChild(zoomCard);
+      }
 
       if (!inputRows || inputRows.length === 0) {
-        container.innerHTML = '<div class="alert-box">No agenda data found.</div>';
+        const alertBox = document.createElement('div');
+        alertBox.className = 'alert-box';
+        alertBox.innerHTML = 'No agenda data found.';
+        container.appendChild(alertBox);
         return;
       }
 
@@ -991,7 +1073,10 @@ Creole Missionaries,,(786) 353-8402`;
       });
 
       if (renderCount === 0) {
-        container.innerHTML = '<div class="alert-box">The agenda lists no current details.</div>';
+        const alertBox = document.createElement('div');
+        alertBox.className = 'alert-box';
+        alertBox.innerHTML = 'The agenda lists no current details.';
+        container.appendChild(alertBox);
       }
     }
 
@@ -1002,24 +1087,26 @@ Creole Missionaries,,(786) 353-8402`;
       try {
         console.log('Fetching church sheets concurrently...');
         
-        const [inputRes, hymnsRes, glossaryRes, contactsRes, hymnDbRes] = await Promise.all([
+        const [inputRes, hymnsRes, glossaryRes, contactsRes, hymnDbRes, techRes] = await Promise.all([
           fetch(inputUrl),
           fetch(hymnsUrl),
           fetch(glossaryUrl),
           fetch(contactsUrl),
-          fetch(hymnDbUrl).catch(() => new Response(''))
+          fetch(hymnDbUrl).catch(() => new Response('')),
+          fetch(techUrl).catch(() => new Response(''))
         ]);
 
         if (!inputRes.ok || !hymnsRes.ok || !glossaryRes.ok || !contactsRes.ok) {
           throw new Error('One or more spreadsheet feeds returned response errors');
         }
 
-        const [inputText, hymnsText, glossaryText, contactsText, hymnDbText] = await Promise.all([
+        const [inputText, hymnsText, glossaryText, contactsText, hymnDbText, techText] = await Promise.all([
           inputRes.text(),
           hymnsRes.text(),
           glossaryRes.text(),
           contactsRes.text(),
-          hymnDbRes ? hymnDbRes.text() : Promise.resolve('')
+          hymnDbRes ? hymnDbRes.text() : Promise.resolve(''),
+          techRes ? techRes.text() : Promise.resolve('')
         ]);
 
         safeStorage.set('cached_input', inputText);
@@ -1027,12 +1114,14 @@ Creole Missionaries,,(786) 353-8402`;
         safeStorage.set('cached_glossary', glossaryText);
         safeStorage.set('cached_contacts', contactsText);
         if (hymnDbText) safeStorage.set('cached_hymnDb', hymnDbText);
+        if (techText) safeStorage.set('cached_tech', techText);
 
         const parsedInput = parseCSV(inputText);
         const parsedGlossary = parseCSV(glossaryText);
         const parsedHymns = parseCSV(hymnsText);
         const parsedContacts = parseCSV(contactsText);
         const parsedHymnDb = parseCSV(hymnDbText);
+        const parsedTech = parseCSV(techText);
 
         engHymnLinks.clear();
         fraHymnLinks.clear();
@@ -1075,7 +1164,7 @@ Creole Missionaries,,(786) 353-8402`;
           }
         });
 
-        renderAgenda(parsedInput, glossaryMap, hymnsMap);
+        renderAgenda(parsedInput, glossaryMap, hymnsMap, parsedTech);
         renderContacts(parsedContacts, glossaryMap);
 
       } catch (error) {
@@ -1086,12 +1175,14 @@ Creole Missionaries,,(786) 353-8402`;
         const fallbackHymnsText = safeStorage.get('cached_hymns') || sampleHymnsCSV;
         const fallbackContactsText = safeStorage.get('cached_contacts') || sampleContactsCSV;
         const fallbackHymnDbText = safeStorage.get('cached_hymnDb') || '';
+        const fallbackTechText = safeStorage.get('cached_tech') || sampleTechCSV;
 
         const parsedInput = parseCSV(fallbackInputText);
         const parsedGlossary = parseCSV(fallbackGlossaryText);
         const parsedHymns = parseCSV(fallbackHymnsText);
         const parsedContacts = parseCSV(fallbackContactsText);
         const parsedHymnDb = parseCSV(fallbackHymnDbText);
+        const parsedTech = parseCSV(fallbackTechText);
 
         engHymnLinks.clear();
         fraHymnLinks.clear();
@@ -1131,7 +1222,7 @@ Creole Missionaries,,(786) 353-8402`;
         });
 
         setTimeout(() => {
-          renderAgenda(parsedInput, glossaryMap, hymnsMap);
+          renderAgenda(parsedInput, glossaryMap, hymnsMap, parsedTech);
           renderContacts(parsedContacts, glossaryMap);
           
           const notice = document.createElement('div');
