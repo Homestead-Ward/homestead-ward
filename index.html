@@ -400,6 +400,7 @@
         </div>
       </div>
 
+      <!-- Updated Schedule Page Block -->
       <div id="page-schedule" class="app-page">
         <h3 class="section-title" style="text-align: center; margin-bottom: 0.5rem;">
           <span class="lang-en">Meeting Schedule</span>
@@ -408,19 +409,19 @@
 
         <div class="agenda-item">
           <div class="agenda-role">
-            <span class="lang-en">12:40 PM – 1:30 PM</span>
-            <span class="lang-ht">12:40 PM – 1:30 PM</span>
+            <span class="lang-en">11:30 AM – 12:30 PM</span>
+            <span class="lang-ht">11:30 AM – 12:30 PM</span>
           </div>
           <div class="agenda-person">
-            <span class="lang-en">Primary (Every Sunday)</span>
-            <span class="lang-ht">Primè (Chak Dimanch)</span>
+            <span class="lang-en">Sacrament Meeting</span>
+            <span class="lang-ht">Reyinyon Sentsèn</span>
           </div>
         </div>
 
         <div class="agenda-item">
           <div class="agenda-role">
-            <span class="lang-en">1st & 3rd Sundays</span>
-            <span class="lang-ht">1er ak 3èm Dimanch</span>
+            <span class="lang-en">12:35 PM – 1:00 PM</span>
+            <span class="lang-ht">12:35 PM – 1:00 PM</span>
           </div>
           <div class="agenda-person">
             <span class="lang-en">Sunday School</span>
@@ -430,12 +431,23 @@
 
         <div class="agenda-item">
           <div class="agenda-role">
-            <span class="lang-en">2nd & 4th Sundays</span>
-            <span class="lang-ht">2èm ak 4èm Dimanch</span>
+            <span class="lang-en">1:05 PM – 1:30 PM</span>
+            <span class="lang-ht">1:05 PM – 1:30 PM</span>
           </div>
           <div class="agenda-person">
             <span class="lang-en">Priesthood, Relief Society, & Young Women</span>
             <span class="lang-ht">Prètriz, Sosyete Sekou, & Jèn Fi</span>
+          </div>
+        </div>
+
+        <div class="agenda-item">
+          <div class="agenda-role">
+            <span class="lang-en">12:35 PM – 1:30 PM</span>
+            <span class="lang-ht">12:35 PM – 1:30 PM</span>
+          </div>
+          <div class="agenda-person">
+            <span class="lang-en">Primary</span>
+            <span class="lang-ht">Primè</span>
           </div>
         </div>
 
@@ -904,11 +916,39 @@ Zoom Testing Mode,OFF`;
         <span class="lang-ht">${formattedDateHt}</span>
       `;
 
-      const isFirstSunday = parsedDate.getDate() <= 7;
-      const remainingRows = inputRows.slice(1);
+      // UPDATED FAST SUNDAY LOGIC: Look for explicit string from Google Sheet (Column A or B)
+      let isFastSunday = parsedDate.getDate() <= 7;
+      let rowsToProcess = [];
+
+      for (let i = 1; i < inputRows.length; i++) {
+        const row = inputRows[i];
+        if (!row) continue;
+        
+        const cell0 = (row[0] || '').trim().toLowerCase();
+        const cell1 = (row.length > 1 ? row[1] || '' : '').trim().toLowerCase();
+        
+        // Detects if you selected "Fast & Testimony", "Regular", etc. in the dropdown
+        if (cell0 === 'regular' || cell1 === 'regular' || 
+            cell0.includes('fast') || cell1.includes('fast') || 
+            cell0.includes('conference') || cell1.includes('conference')) {
+            
+          if (cell0.includes('fast') || cell1.includes('fast')) {
+            isFastSunday = true;
+          } else {
+            isFastSunday = false; // "Regular" disables the testimonies block.
+          }
+          continue; // Skip rendering this dropdown row into the visual UI
+        }
+        
+        // Skip empty rows (where both A and B are blank)
+        if (!cell0 && !cell1) continue;
+        
+        rowsToProcess.push(row);
+      }
+
       let renderCount = 0;
 
-      remainingRows.forEach(([role, val]) => {
+      rowsToProcess.forEach(([role, val]) => {
         if (!role || !role.trim()) return;
 
         const roleTrimmed = role.trim();
@@ -980,7 +1020,7 @@ Zoom Testing Mode,OFF`;
 
         if (roleLower.includes('business') && !valTrimmed) return;
 
-        if (isFirstSunday) {
+        if (isFastSunday) {
           if (isSpeakerOrInterHymn) return;
         } else {
           if (isSpeakerOrInterHymn && !valTrimmed) return;
@@ -1053,7 +1093,7 @@ Zoom Testing Mode,OFF`;
         renderCount++;
 
         const isSacramentRow = roleTrimmed.toLowerCase().includes('sacrament') && !roleTrimmed.toLowerCase().includes('hymn');
-        if (isFirstSunday && isSacramentRow) {
+        if (isFastSunday && isSacramentRow) {
           const testDiv = document.createElement('div');
           testDiv.className = 'agenda-item';
 
